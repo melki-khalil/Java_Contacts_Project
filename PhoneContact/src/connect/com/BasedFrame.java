@@ -2,6 +2,7 @@ package connect.com;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
@@ -23,12 +24,18 @@ public class BasedFrame extends JFrame implements MouseListener {
     JScrollPane scroll = new JScrollPane(contentPanel);	
     JLabel btnFav= new JLabel("favorite");
     JLabel btnctn= new JLabel("Contact");
+    JLabel btntel= new JLabel();
+
+    
+    
     List<PersonPanel> panelList = new ArrayList<>();
     public BasedFrame() {
+    	
         this.contentPanel.setLayout(null);
         this.contentPanel.setPreferredSize(new Dimension(500, 600));
         this.btnFav.setBounds(330,600,165,65);
         this.btnctn.setBounds(165,600,165,65);
+        this.btntel.setBounds(410,525,65,65);
         
         
         this.setTitle("app");
@@ -36,6 +43,15 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(new Color(200, 200, 200));
+        //keypad
+        ImageIcon telorignalIcon = new ImageIcon ("keypad.png");
+        Image telimg= telorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        this.btntel.setIcon(new ImageIcon(telimg));
+        this.btntel.setBackground(Color.cyan);
+        this.btntel.setOpaque(true);
+        this.btntel.setHorizontalAlignment(JLabel.CENTER);
+        this.btntel.setVerticalAlignment(JLabel.CENTER);
+        this.btntel.addMouseListener(this);
         
          //contact section
         this.btnctn.setBackground(Color.gray);
@@ -45,17 +61,17 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.btnctn.setVerticalTextPosition(JLabel.BOTTOM);
         this.btnctn.addMouseListener(this);
         //favorite section
-        ImageIcon favorignalIcon = new ImageIcon ("Star.png");
-        Image Favimg= favorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        this.btnFav.setIcon(new ImageIcon(Favimg));
-   
-        this.btnFav.setBackground(Color.yellow);
+      
+        
         this.btnFav.setOpaque(true);
         this.btnFav.setFont(new Font("Arial", Font.PLAIN, 25));
         this.btnFav.setVerticalTextPosition(JLabel.CENTER);
         this.btnFav.setVerticalTextPosition(JLabel.BOTTOM);
         this.btnFav.addMouseListener(this);
+        this.btntel.addMouseListener(this);
 
+   
+       
         Border border = BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0x706A69));
         this.btnFav.setBorder(border);
         this.setLayout(null);
@@ -66,6 +82,9 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.scroll.setBounds(0, 0, 500, 600); 
         this.scroll.getVerticalScrollBar().setUnitIncrement(16); 
         this.scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        //adding components
+        this.add(this.btntel);
         this.add(this.scroll);
         this.add(this.btnctn);
         this.add(btnFav);
@@ -159,7 +178,7 @@ public class BasedFrame extends JFrame implements MouseListener {
 		
 	}
 	//contact button action	
-		if(e.getSource()==this.btnctn) {
+		else if(e.getSource()==this.btnctn) {
 			this.modfav=false;
 			for(PersonPanel panel: this.panelList) {
 				if(panel.isFavorite) {
@@ -174,12 +193,15 @@ public class BasedFrame extends JFrame implements MouseListener {
 				i++;
 			}
 			rearrangePanels(); 
-			
+			this.remove(this.btntel);
 			this.contentPanel.revalidate(); 
 			this.contentPanel.repaint();    
 			
 		
 	}
+		else if(e.getSource()==this.btntel) {
+
+		}
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
