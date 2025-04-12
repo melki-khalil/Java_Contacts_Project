@@ -18,11 +18,11 @@ public class CallingPanel extends JPanel {
 
         JLabel name = new JLabel(nameText);
         name.setFont(new Font("Arial", Font.BOLD, 30));
-        name.setBounds(160, 100, 200, 50);
+        name.setBounds(160+(50-5*nameText.length()), 100, 200, 50);
 
         JLabel number = new JLabel(numberText);
         number.setFont(new Font("Arial", Font.BOLD, 30));
-        number.setBounds(160, 150, 200, 50);
+        number.setBounds(160+(50-5*numberText.length()), 150, 200, 50);
 
         JLabel callingLabel = new JLabel("Calling...");
         callingLabel.setFont(new Font("Arial", Font.BOLD, 30));

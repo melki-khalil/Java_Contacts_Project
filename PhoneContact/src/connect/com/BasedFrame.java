@@ -109,6 +109,7 @@ public class BasedFrame extends JFrame implements MouseListener {
 
     }
     
+    //functions 
     
     public void rearrangePanels() {
         int y = 0;
@@ -195,6 +196,37 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.revalidate();
         this.repaint();
    }
+    public void addContact(String number) {
+    	PersonPanel panel = new PersonPanel(this);
+    	panel.number.setText(number);
+    	editContact(panel);
+    	panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
+    	this.panelList.add(panel);
+    	
+    	
+    }
+    public void editContact(PersonPanel panel) {
+    	this.getContentPane().removeAll();
+    	InformationPanel edit= new InformationPanel(panel,this);
+		
+    	this.setLayout(null);
+        this.add(edit);
+        this.revalidate();
+        this.repaint();
+    	
+    }
+    public void ShowNumberPanel(){
+		this.getContentPane().removeAll();
+		NombersOPanel number= new NombersOPanel(this);
+		
+    	this.setLayout(null);
+        this.add(number);
+        this.revalidate();
+        this.repaint();
+        number.btnBack.addActionListener(e -> {
+            this.goBack();
+        });
+	}
     public void showCallingPanel(PersonPanel panel) {
     	this.getContentPane().removeAll();
     	CallingPanel callp= new CallingPanel(panel.name,panel.number);
@@ -249,13 +281,7 @@ public class BasedFrame extends JFrame implements MouseListener {
 		
 	}
 		else if(e.getSource()==this.btntel) {
-			this.getContentPane().removeAll();
-			NombersOPanel number= new NombersOPanel(this);
-			
-	    	this.setLayout(null);
-	        this.add(number);
-	        this.revalidate();
-	        this.repaint();
+			ShowNumberPanel();
 	        
 	        
 			    

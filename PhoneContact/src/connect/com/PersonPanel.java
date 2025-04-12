@@ -19,7 +19,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 	int k=0;
 	JLabel image = new JLabel();
 	
-	JLabel name = new JLabel("name");
+	JLabel name = new JLabel("");
 	JLabel number = new JLabel("123654789");
 	JLabel btnfav= new JLabel();
 	JLabel btncall=new JLabel();
@@ -52,12 +52,12 @@ public class PersonPanel extends JPanel implements MouseListener{
 		// Create popup menu
 		this.options = new JPopupMenu(); // Replacing JMenu with JPopupMenu
 		this.delete.addActionListener(e -> {
-		    // handle delete action
+		    
 		    parent.removeContact(this);
 		});
 		this.edit.addActionListener(e -> {
-		    // handle edit action
-		    System.out.println("Edit clicked");
+		    
+			parent.editContact(this);
 		});
 		this.options.add(this.edit);
 		this.options.add(this.delete);
@@ -198,9 +198,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 		else if(e.getSource()==this.btncall) {
 			this.btncall.setBorder(null);
 		}
-		else if(e.getSource()==this.btnmsg) {
-			this.btnmsg.setBorder(null);
-		}
+		
 		// TODO Auto-generated method stub
 		
 	}
