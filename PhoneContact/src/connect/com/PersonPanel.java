@@ -10,12 +10,15 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 
 public class PersonPanel extends JPanel implements MouseListener{
 	int k=0;
 	JLabel image = new JLabel();
+	
 	JLabel name = new JLabel("name");
 	JLabel number = new JLabel("123654789");
 	JLabel btnfav= new JLabel();
@@ -23,6 +26,10 @@ public class PersonPanel extends JPanel implements MouseListener{
 	JLabel btnmsg=new JLabel();
 	Border sqrborder = BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0x706A69));
 	boolean isFavorite=false;
+	JPopupMenu options ;
+	JLabel btnOptions = new JLabel();
+	JMenuItem delete= new JMenuItem("delete");
+	JMenuItem edit= new JMenuItem("edit");
 	BasedFrame parent;
 	PersonPanel(BasedFrame parent) {
 	    this.parent = parent;
@@ -38,12 +45,39 @@ public class PersonPanel extends JPanel implements MouseListener{
 		Image  message=  messageorignalIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 		
 		Image bp= orignalIcon.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
+		
+		//options bar
+		this.delete.addMouseListener(this);
+		this.edit.addMouseListener(this);
+		// Create popup menu
+		this.options = new JPopupMenu(); // Replacing JMenu with JPopupMenu
+		this.delete.addActionListener(e -> {
+		    // handle delete action
+		    parent.removeContact(this);
+		});
+		this.edit.addActionListener(e -> {
+		    // handle edit action
+		    System.out.println("Edit clicked");
+		});
+		this.options.add(this.edit);
+		this.options.add(this.delete);
+
+		// Dots icon that shows the popup menu
+		
+		ImageIcon dotsIcon = new ImageIcon("dots.png");
+		Image scaledDots = dotsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+		btnOptions.setIcon(new ImageIcon(scaledDots));
+		btnOptions.setBounds(440, 25, 50, 40);
+		btnOptions.setOpaque(true);
+		btnOptions.setBackground(Color.white);
+		btnOptions.addMouseListener(this);
+		
 		this.image.setIcon( new ImageIcon (bp));
 		this.btncall.setIcon(new ImageIcon(call));
 		this.btnmsg.setIcon(new ImageIcon(message));
 		
 		this.btnfav.setIcon(new ImageIcon(Favimg));
-		this.btnfav.setBounds(400, 10, 60, 60);
+		this.btnfav.setBounds(370, 10, 60, 60);
 		this.btnfav.addMouseListener(this);
 		this.btnfav.setOpaque(true);
 		this.image.addMouseListener(this);
@@ -71,6 +105,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 		this.add(this.name);
 		this.add(this.number);
 		this.add(this.btnfav);
+		this.add(btnOptions);
 		
 		Border border = BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(0x706A69));
 		this.setBackground(Color.white);
@@ -109,9 +144,12 @@ public class PersonPanel extends JPanel implements MouseListener{
 			}
 		}
 		else if (e.getSource() == this.btncall) {
-		    parent.showCallingPanel(); 
+		    parent.showCallingPanel(this); 
 		}
 
+		else if(e.getSource()==this.btnOptions) {
+			options.show(btnOptions, e.getX(), e.getY());
+		}
 		else {
 		    if (this.k == 0) {
 		        this.k = 70; // expand
@@ -121,7 +159,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 		    parent.rearrangePanels(); // tell the parent to adjust all panels
 		}
 
-	
+		
 	}
 
 	@Override

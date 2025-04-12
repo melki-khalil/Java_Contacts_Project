@@ -11,17 +11,19 @@ public class NombersOPanel extends JPanel implements MouseListener {
     JLabel btncall = new JLabel();
     JLabel removeNumber = new JLabel();
     JLabel options = new JLabel();
+    JButton btnBack = new JButton("Back");
     BasedFrame parent;
 
     // Digit labels stored in an array for easy iteration
     JLabel[] buttons = new JLabel[12];
     String[] labels = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
 
-    public NombersOPanel() {
+    public NombersOPanel(BasedFrame parent) {
+    	this.parent=parent;
         setLayout(null);
         setBounds(0, 200, 500, 500);
         setBackground(new Color(240, 240, 240));
-
+        
         // Text area styling
         textArea.setBounds(20, 20, 450, 60);
         textArea.setOpaque(true);
@@ -57,6 +59,13 @@ public class NombersOPanel extends JPanel implements MouseListener {
         btncall.setBorder(new EmptyBorder(5, 5, 5, 5));
         btncall.addMouseListener(this);
         
+        
+       btnBack.setBounds(10,400,50,50);
+       btnBack.setBackground(Color.WHITE);
+       btnBack.setOpaque(true);
+       btnBack.setFont(new Font("Arial", Font.BOLD, 24));
+       btnBack.addMouseListener(this);
+       
         ImageIcon deleteIcon = new ImageIcon("delete.png");
         Image scaledDelete = deleteIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         this.removeNumber.setIcon(new ImageIcon(scaledDelete));
@@ -77,7 +86,7 @@ public class NombersOPanel extends JPanel implements MouseListener {
         this.NombersArea.add(btncall);
         this.NombersArea.add(new JLabel(""));
         
-        
+        this.add(btnBack);
         this.add(textArea);
        this.add(NombersArea);
     }
@@ -109,10 +118,13 @@ public class NombersOPanel extends JPanel implements MouseListener {
         	updateText(str.substring(0,str.length()-1));
             return;
         }
-        if (e.getSource() == btncall) {
-            // Placeholder: Action when call button is pressed
+        else if (e.getSource() == btncall) {
+          
             System.out.println("Calling: " + textArea.getText());
             JOptionPane.showMessageDialog(this, "Calling: " + textArea.getText());
+        }
+        else if (e.getSource() == btnBack) {
+            this.parent.goBack();
         }
     }
 

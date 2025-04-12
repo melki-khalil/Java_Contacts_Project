@@ -2,7 +2,6 @@ package connect.com;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
@@ -14,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
@@ -21,20 +21,26 @@ import javax.swing.border.Border;
 public class BasedFrame extends JFrame implements MouseListener {
 	boolean modfav=false;
     JPanel contentPanel = new JPanel();
+    JPanel buttonstPanel = new JPanel();
     JScrollPane scroll = new JScrollPane(contentPanel);	
     JLabel btnFav= new JLabel("favorite");
     JLabel btnctn= new JLabel("Contact");
     JLabel btntel= new JLabel();
-
+    JLayeredPane pane= new JLayeredPane();
+    
     
     
     List<PersonPanel> panelList = new ArrayList<>();
     public BasedFrame() {
     	
+    	this.pane.setLayout(null);
+    	this.pane.setBounds(0, 0, 500, 600);
+    	this.buttonstPanel.setLayout(null);
+    	this.buttonstPanel.setBounds(0, 600, 500, 100);
         this.contentPanel.setLayout(null);
         this.contentPanel.setPreferredSize(new Dimension(500, 600));
-        this.btnFav.setBounds(330,600,165,65);
-        this.btnctn.setBounds(165,600,165,65);
+        this.btnFav.setBounds(330,0,165,65);
+        this.btnctn.setBounds(165,0,165,65);
         this.btntel.setBounds(410,525,65,65);
         
         
@@ -68,7 +74,7 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.btnFav.setVerticalTextPosition(JLabel.CENTER);
         this.btnFav.setVerticalTextPosition(JLabel.BOTTOM);
         this.btnFav.addMouseListener(this);
-        this.btntel.addMouseListener(this);
+        
 
    
        
@@ -84,10 +90,13 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         //adding components
-        this.add(this.btntel);
-        this.add(this.scroll);
-        this.add(this.btnctn);
-        this.add(btnFav);
+        this.pane.add(this.btntel, Integer.valueOf(1));
+        this.pane.add(this.scroll, Integer.valueOf(0));
+        this.add(pane);
+        this.buttonstPanel.add(this.btnctn);
+        this.buttonstPanel.add(this.btnFav);
+        this.add(this.buttonstPanel);
+        
         for (int i = 0; i < 10; i++) {
             PersonPanel panel = new PersonPanel(this); // pass this!
             panel.name.setText("name" + (i + 1));
@@ -97,10 +106,10 @@ public class BasedFrame extends JFrame implements MouseListener {
         }
         rearrangePanels(); 
 
-        
-        
 
     }
+    
+    
     public void rearrangePanels() {
         int y = 0;
         if(this.modfav) {
@@ -131,10 +140,66 @@ public class BasedFrame extends JFrame implements MouseListener {
         contentPanel.revalidate();
         contentPanel.repaint();
     }
+    
+    public void panelMode() {
+    	int i=0;
+    	if(this.modfav) {
+    		for(PersonPanel panel: this.panelList) {
+				if(panel.isFavorite) {
+					panel.setBounds(0, 100*i, 500, 100);
+					this.contentPanel.add(panel);
+					i++;
+				}
+			}
+    		
+    	}
+    	else {
+    		for(PersonPanel panel: this.panelList) {
+    			this.contentPanel.remove(panel);
+    			panel.setBounds(0, 100*i, 500, 100);
+    			this.contentPanel.add(panel);
+    			i++;
+    		}
+    	}
+    }
+    
+    
+    public void removeContact(PersonPanel Contact) {
+    	
+    	for(PersonPanel panel: this.panelList) {
+		
+			this.contentPanel.remove(panel);
+			
+		}
+    	this.panelList.remove(Contact);
+    	
+		panelMode();
+		rearrangePanels(); 
+		
+		this.contentPanel.revalidate(); 
+		this.contentPanel.repaint();
+    	
+    }
+    public void goBack() {
+        this.getContentPane().removeAll();
+        this.pane.removeAll(); // Clear the layered pane just in case
 
-    public void showCallingPanel() {
+        this.pane.add(this.btntel, Integer.valueOf(1));
+        this.pane.add(this.scroll, Integer.valueOf(0));
+
+        this.setLayout(null);
+        this.add(pane);
+        this.add(this.buttonstPanel);
+        showContact();
+        rearrangePanels();
+        this.revalidate();
+        this.repaint();
+   }
+    public void showCallingPanel(PersonPanel panel) {
     	this.getContentPane().removeAll();
-    	CallingPanel callp= new CallingPanel();
+    	CallingPanel callp= new CallingPanel(panel.name,panel.number);
+    	panel.name=panel.name;
+    	panel.number=panel.number;
     	callp.setBounds(0, 0, 500, 700);
     	this.setLayout(null);
         this.add(callp);
@@ -142,16 +207,23 @@ public class BasedFrame extends JFrame implements MouseListener {
         this.repaint();
         
         callp.btnBack.addActionListener(e -> {
-            this.getContentPane().removeAll();
-            this.setLayout(null);
-            this.add(scroll);
-            this.add(btnctn);
-            this.add(btnFav);
-            rearrangePanels();
-            this.revalidate();
-            this.repaint();
+            this.goBack();
         });
 
+    }
+    public void showContact(){
+    	this.modfav=false;
+		for(PersonPanel panel: this.panelList) {
+			if(panel.isFavorite) {
+				this.contentPanel.remove(panel);
+			}
+		}
+		panelMode();
+		rearrangePanels(); 
+		
+		this.contentPanel.revalidate(); 
+		this.contentPanel.repaint();    
+		
     }
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -166,42 +238,28 @@ public class BasedFrame extends JFrame implements MouseListener {
 			
 			
 			int i=0;
-			for(PersonPanel panel: this.panelList) {
-				if(panel.isFavorite) {
-					panel.setBounds(0, 100*i, 500, 100);
-					this.contentPanel.add(panel);
-					i++;
-				}
-			}
+			panelMode();
 			rearrangePanels(); 
 			
 		
 	}
 	//contact button action	
 		else if(e.getSource()==this.btnctn) {
-			this.modfav=false;
-			for(PersonPanel panel: this.panelList) {
-				if(panel.isFavorite) {
-					this.contentPanel.remove(panel);
-				}
-			}
-			int i=0;
-			for(PersonPanel panel: this.panelList) {
-				this.contentPanel.remove(panel);
-				panel.setBounds(0, 100*i, 500, 100);
-				this.contentPanel.add(panel);
-				i++;
-			}
-			rearrangePanels(); 
-			this.remove(this.btntel);
-			this.contentPanel.revalidate(); 
-			this.contentPanel.repaint();    
-			
+			showContact();
 		
 	}
 		else if(e.getSource()==this.btntel) {
-
-		}
+			this.getContentPane().removeAll();
+			NombersOPanel number= new NombersOPanel(this);
+			
+	    	this.setLayout(null);
+	        this.add(number);
+	        this.revalidate();
+	        this.repaint();
+	        
+	        
+			    
+			    }
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
