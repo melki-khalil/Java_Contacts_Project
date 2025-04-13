@@ -27,12 +27,13 @@ public class NombersOPanel extends JPanel implements MouseListener {
     JLabel btnOptions = new JLabel();
     JButton btnBack = new JButton();
     JMenuItem edit= new JMenuItem("new contact");
+    
 
     // Digit labels stored in an array for easy iteration
     JLabel[] buttons = new JLabel[12];
     String[] labels = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"};
 
-  
+    String number="";
     BasedFrame parent;
     
     
@@ -124,6 +125,7 @@ public class NombersOPanel extends JPanel implements MouseListener {
     
     private void updateText(String newText) {
         this.textArea.setText(newText);
+        this.number=newText;
         if(newText.length()!=0) {
         	this.textArea.add(this.removeNumber);
         	this.textArea.add(this.btnOptions);
@@ -134,7 +136,8 @@ public class NombersOPanel extends JPanel implements MouseListener {
         	this.textArea.remove(this.btnOptions);
         	  
         }
-        this.parent.findByInput(newText);
+        parent.input=newText;
+        parent.findByInput(newText);
         this.textArea.revalidate();
         this.textArea.repaint();
       
@@ -165,10 +168,8 @@ public class NombersOPanel extends JPanel implements MouseListener {
         	}
         	else if(str!=""){
         		
-        		PersonPanel panel = new PersonPanel(this.parent);
-        		panel.name.setText("Unknown");
-        		panel.number.setText(str);
-        		this.parent.showCallingPanel(panel);
+        		
+        		this.parent.isAContact(str);
         	}
         	
         	

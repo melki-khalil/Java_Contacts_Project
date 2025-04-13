@@ -33,6 +33,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     JLayeredPane pane= new JLayeredPane();
     JPanel searchPanel=new JPanel();
     JTextField searchText= new JTextField();
+    String input="";
 
     
     
@@ -242,12 +243,17 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 		this.getContentPane().removeAll();
 		NombersOPanel number= new NombersOPanel(this);
 		
+		
+		this.pane.removeAll();
 		this.scroll.setBounds(0,0,500,200);
         this.pane.setBounds(0,0,500,200);
+        this.pane.setLayout(null);
+        this.pane.add(this.scroll, Integer.valueOf(0));
         
-   
-        
+        this.showContact();
+       
     	this.setLayout(null);
+    	
     	this.add(this.pane);
         this.add(number);
         
@@ -289,19 +295,27 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     
     public void findByInput(String search) {
         List<PersonPanel> result = new ArrayList<>();
-        
+        boolean match=false;
         this.contentPanel.removeAll();
 
         if (search.isEmpty()) {
             result = this.panelList;
         } else {
             for (PersonPanel panel : this.panelList) {
-                boolean matchName = panel.name.getText().toLowerCase().startsWith(search.trim().toLowerCase());
-                boolean matchNumber =  panel.number.getText().startsWith(search);
+            	if(this.searching) {
+            		
+            	 match = panel.name.getText().toLowerCase().startsWith(search.trim().toLowerCase());
+            	}
+            	else {
+             		
+                    match =  panel.number.getText().startsWith(search);
+            	}
+           
 
-                if ((matchName || matchNumber)) {
+                if (match) {
 
                     result.add(panel);
+                	
                 }
             }
         }
@@ -309,7 +323,27 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         rearrangePanels(result);
      
     }
- 
+    public void isAContact(String str){
+    
+    	PersonPanel contact=new PersonPanel(this);
+    	contact.name.setText("Unknown");
+    	contact.number.setText(str);
+    	for (PersonPanel panel : this.panelList) {
+        	
+    		
+               boolean match =  panel.number.getText().equals(str);
+             
+               
+              if(match) {
+            	  contact=panel;
+            	  break;
+              }
+        	}
+    	
+    	showCallingPanel(contact);
+    	
+       
+    }
 
        
   
@@ -390,8 +424,8 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	    if (src == this.searchText) {
 	        String str = removeLastIfSpecial(this.searchText.getText());
 	        this.searchText.setText(str);
-	        
-	        findByInput(str);
+	        this.input=str;
+	        findByInput(this.input);
 	    } 
 		
 	}

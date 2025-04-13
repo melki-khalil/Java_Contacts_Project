@@ -98,7 +98,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 		this.btnmsg.setHorizontalAlignment(JLabel.CENTER);
 		this.btncall.addMouseListener(this);
 		this.btnmsg.addMouseListener(this);
-		//add compenets
+		//add compounds
 		this.add(this.btnmsg);
 		this.add(this.btncall);
 		this.add(image);
@@ -158,7 +158,7 @@ public class PersonPanel extends JPanel implements MouseListener{
 		    }
 		    if(parent.searching) {
 		    	
-		    	parent.findByInput(parent.searchText.getText()); // tell the parent to adjust all panels
+		    	parent.findByInput(parent.input); // tell the parent to adjust all panels
 		    }
 		}
 
