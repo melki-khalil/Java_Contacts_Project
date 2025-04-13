@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -140,9 +141,14 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 			parent.goBack();
 		}
 		if(src==this.btnSave) {
-			this.contact.name.setText(this.nameText.getText());
-			this.contact.number.setText(this.numberText.getText());
-			parent.goBack();
+			if(nameText.getText().isEmpty()) {
+	     	    JOptionPane.showMessageDialog(null, "You need to insert name", "Warning", JOptionPane.WARNING_MESSAGE);
+			}else {
+				
+				this.contact.name.setText(this.nameText.getText());
+				this.contact.number.setText(this.numberText.getText());
+				parent.goBack();
+			}
 			
 		}
 		

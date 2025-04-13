@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,7 +21,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class NombersOPanel extends JPanel implements MouseListener {
+public class NombersOPanel extends JPanel implements MouseListener , KeyListener{
     JPanel NombersArea = new JPanel(new GridLayout(5, 3, 5, 5));
     JLabel textArea = new JLabel();
     JLabel btncall = new JLabel();
@@ -111,6 +114,10 @@ public class NombersOPanel extends JPanel implements MouseListener {
 		btnOptions.setBackground(Color.white);
 		btnOptions.addMouseListener(this);
 		btncall.addMouseListener(this);
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+		this.addKeyListener(this);
+
         // Add components
         this.NombersArea.add(new JLabel(""));
         this.NombersArea.add(btncall);
@@ -119,6 +126,9 @@ public class NombersOPanel extends JPanel implements MouseListener {
         this.add(btnBack);
         this.add(textArea);
        this.add(NombersArea);
+       this.setFocusable(true);
+       requestFocusInWindow();
+      
       
     }
 
@@ -185,4 +195,45 @@ public class NombersOPanel extends JPanel implements MouseListener {
     @Override public void mouseReleased(MouseEvent e) {}
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		if(this==e.getSource()) {
+			char ch = e.getKeyChar();
+			
+			String str = Character.toString(ch);
+
+			if (Arrays.asList(this.labels).contains(str)) {
+				updateText(textArea.getText() + ch);
+	            return;
+			}
+			else if( e.getKeyCode()==0) {
+				str= textArea.getText();
+				updateText(str.substring(0,str.length()-1));
+			}
+		}
+		
+
+	}
+
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		
+		
+	}
+	@Override
+	public void addNotify() {
+	    super.addNotify();
+	    requestFocusInWindow();
+	}
+
 }

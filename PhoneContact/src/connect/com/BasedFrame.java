@@ -370,7 +370,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         Gson gson = new Gson();
         try (FileWriter writer = new FileWriter("contacts_data.json")) {
             gson.toJson(contactList, writer);
-            System.out.println("Data saved to contacts_data.json");
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -403,6 +403,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
             panel.name.setText(contact.name);
             panel.number.setText(contact.number);
             panel.isFavorite = contact.favorite;
+            panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
             panelList.add(panel);
         }
     }
