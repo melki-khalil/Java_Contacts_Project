@@ -8,6 +8,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +26,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+
+
+
 public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
+	
+	
 	boolean modfav=false;
 	 boolean searching=true;
     JPanel contentPanel = new JPanel();
@@ -34,6 +47,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     JPanel searchPanel=new JPanel();
     JTextField searchText= new JTextField();
     String input="";
+    ArrayList<Object[]> panelData = new ArrayList<>();
 
     
     
@@ -82,14 +96,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.btnFav.setVerticalTextPosition(JLabel.BOTTOM);
         this.btnFav.addMouseListener(this);
         
-        for(int i=1; i<11;i++) {
-        	PersonPanel panel =new PersonPanel(this);
-        	panel.name.setText("name"+i);
-        	PersonPanel panel2 =new PersonPanel(this);
-        	panel2.name.setText("person"+i);
-        	this.panelList.add(panel);
-        	this.panelList.add(panel2);
-        }
+       
    
        
         Border border = BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0x706A69));
@@ -116,9 +123,12 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.buttonstPanel.add(this.btnFav);
         this.add(this.buttonstPanel);
         
+        extractContacts();
+        	
+        
         showContact();
         rearrangePanels(this.panelList); 
-
+        
 
     }
     
@@ -344,8 +354,85 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     	
        
     }
+  
 
-       
+    public void SaveAndClose() {
+        List<ContactData> contactList = new ArrayList<>();
+
+        for (PersonPanel panel : this.panelList) {
+            ContactData data = new ContactData();
+            data.name = panel.name.getText();
+            data.number = panel.number.getText();
+            data.favorite = panel.isFavorite;
+            contactList.add(data);
+        }
+
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter("contacts_data.json")) {
+            gson.toJson(contactList, writer);
+            System.out.println("Data saved to contacts_data.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        this.dispose(); 
+    }
+
+    public void extractContacts() {
+        File file = new File("contacts_data.json");
+        if (!file.exists()) {
+            try {
+                boolean created = file.createNewFile(); // Creates an empty file
+                if (created) {
+                    System.out.println("contacts_data.json created.");
+                    // Optionally write an empty JSON array to it
+                    FileWriter writer = new FileWriter(file);
+                    writer.write("[]");
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Load the contacts into ContactData objects
+        List<ContactData> loadedData = loadFromJsonToContacts("contacts_data.json");
+        
+        for (ContactData contact : loadedData) {
+            PersonPanel panel = new PersonPanel(this);
+            panel.name.setText(contact.name);
+            panel.number.setText(contact.number);
+            panel.isFavorite = contact.favorite;
+            panelList.add(panel);
+        }
+    }
+
+    public List<ContactData> loadFromJsonToContacts(String  filePath) {
+        Gson gson = new Gson();
+        try (Reader reader = new FileReader(filePath)) {
+            java.lang.reflect.Type listType = new TypeToken<List<ContactData>>() {}.getType();
+            List<ContactData> contactList = gson.fromJson(reader, listType);
+            return contactList;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JsonSyntaxException e) {
+            System.out.println("JSON is malformed or not as expected.");
+            e.printStackTrace();
+        }
+        return new ArrayList<>(); // return an empty list if loading fails
+    }
+
+
+
+
+    
+  
+
+
+
+
+  
+
   
 
     
