@@ -156,7 +156,10 @@ public class PersonPanel extends JPanel implements MouseListener{
 		    } else {
 		        this.k = 0;  // collapse
 		    }
-		    parent.rearrangePanels(); // tell the parent to adjust all panels
+		    if(parent.searching) {
+		    	
+		    	parent.findByInput(parent.searchText.getText()); // tell the parent to adjust all panels
+		    }
 		}
 
 		

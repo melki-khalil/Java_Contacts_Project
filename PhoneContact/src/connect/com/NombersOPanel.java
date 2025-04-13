@@ -25,7 +25,7 @@ public class NombersOPanel extends JPanel implements MouseListener {
     JLabel removeNumber = new JLabel();
     JPopupMenu options ;
     JLabel btnOptions = new JLabel();
-    JButton btnBack = new JButton("Back");
+    JButton btnBack = new JButton();
     JMenuItem edit= new JMenuItem("new contact");
 
     // Digit labels stored in an array for easy iteration
@@ -68,6 +68,9 @@ public class NombersOPanel extends JPanel implements MouseListener {
         // Call button
         options=new JPopupMenu();
         btncall.setBounds(220, 300, 50, 50);
+        ImageIcon BackorignalIcon = new ImageIcon ("Back.png");
+        Image Backimg= BackorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        this.btnBack.setIcon(new ImageIcon(Backimg));
         ImageIcon callIcon = new ImageIcon("telephone.png");
         Image scaledCall = callIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         btncall.setIcon(new ImageIcon(scaledCall));
@@ -106,7 +109,7 @@ public class NombersOPanel extends JPanel implements MouseListener {
 		btnOptions.setOpaque(true);
 		btnOptions.setBackground(Color.white);
 		btnOptions.addMouseListener(this);
-		
+		btncall.addMouseListener(this);
         // Add components
         this.NombersArea.add(new JLabel(""));
         this.NombersArea.add(btncall);
@@ -124,15 +127,17 @@ public class NombersOPanel extends JPanel implements MouseListener {
         if(newText.length()!=0) {
         	this.textArea.add(this.removeNumber);
         	this.textArea.add(this.btnOptions);
-        	 btncall.addMouseListener(this);
+        	
         }
         else {
         	this.textArea.remove(this.removeNumber);
         	this.textArea.remove(this.btnOptions);
-        	  btncall.removeMouseListener(this);
+        	  
         }
+        this.parent.findByInput(newText);
         this.textArea.revalidate();
         this.textArea.repaint();
+      
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -148,10 +153,23 @@ public class NombersOPanel extends JPanel implements MouseListener {
             return;
         }
         else if (e.getSource() == btncall) {
-        	        		PersonPanel panel = new PersonPanel(this.parent);
-            	panel.name.setText("Unknown");
-            	panel.number.setText(this.textArea.getText());
-            	this.parent.showCallingPanel(panel);
+        	String str=this.textArea.getText();
+        	
+        	
+        	if ( str.startsWith("*")&& str.endsWith("#")) {
+        	    JOptionPane.showMessageDialog(null, " Code "+str+" is in process","code", JOptionPane.INFORMATION_MESSAGE);
+        	} else if( str.startsWith("*")) {
+        	    JOptionPane.showMessageDialog(null, "Error: invalide code", "Error", JOptionPane.ERROR_MESSAGE);
+        	} else if(str.endsWith("#")) {
+        	    JOptionPane.showMessageDialog(null, "Error: invalide code", "Error", JOptionPane.ERROR_MESSAGE);
+        	}
+        	else if(str!=""){
+        		
+        		PersonPanel panel = new PersonPanel(this.parent);
+        		panel.name.setText("Unknown");
+        		panel.number.setText(str);
+        		this.parent.showCallingPanel(panel);
+        	}
         	
         	
         
