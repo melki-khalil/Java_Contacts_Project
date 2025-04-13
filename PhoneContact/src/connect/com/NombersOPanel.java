@@ -166,7 +166,7 @@ public class NombersOPanel extends JPanel implements MouseListener {
         	} else if(str.endsWith("#")) {
         	    JOptionPane.showMessageDialog(null, "Error: invalide code", "Error", JOptionPane.ERROR_MESSAGE);
         	}
-        	else if(str!=""){
+        	else if(!str.equals("")){
         		
         		
         		this.parent.isAContact(str);
