@@ -18,18 +18,21 @@ public class CallingPanel extends JPanel {
 
         JLabel name = new JLabel(nameText);
         name.setFont(new Font("Arial", Font.BOLD, 30));
-        name.setBounds(160+(50-5*nameText.length()), 100, 200, 50);
+        name.setBounds(0, 100, 500, 50);
+        name.setHorizontalAlignment(JLabel.CENTER);
 
         JLabel number = new JLabel(numberText);
         number.setFont(new Font("Arial", Font.BOLD, 30));
-        number.setBounds(160+(50-5*numberText.length()), 150, 200, 50);
+        number.setBounds(0, 150, 500, 50);
+        number.setHorizontalAlignment(JLabel.CENTER);
+        
 
         JLabel callingLabel = new JLabel("Calling...");
-        callingLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        callingLabel.setBounds(160, 200, 200, 50);
-
+        callingLabel.setFont(new Font("Arial", Font.ITALIC, 20));
+        callingLabel.setBounds(0, 200, 500, 50);
+        callingLabel.setHorizontalAlignment(JLabel.CENTER);
         btnBack.setText("Back");
-        btnBack.setBounds(180, 300, 100, 40);
+        btnBack.setBounds(180, 580, 100, 40);
         btnBack.setBackground(Color.RED);
         btnBack.setForeground(Color.WHITE);
         btnBack.setFocusPainted(false);
