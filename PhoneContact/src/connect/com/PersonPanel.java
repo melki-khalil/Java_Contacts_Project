@@ -1,11 +1,21 @@
 package connect.com;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -23,6 +33,8 @@ public class PersonPanel extends JPanel implements MouseListener {
     JLabel btnfav = new JLabel();
     JLabel btncall = new JLabel();
     JLabel btnmsg = new JLabel();
+    JLabel timeLabel = new JLabel();
+    JLabel dateLabel = new JLabel();
     Border sqrborder = BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(0x706A69));
     boolean isFavorite = false;
     JPopupMenu options;
@@ -30,11 +42,12 @@ public class PersonPanel extends JPanel implements MouseListener {
     JMenuItem delete = new JMenuItem("delete");
     JMenuItem edit = new JMenuItem("edit");
     BasedFrame parent;
+    
 
     PersonPanel(BasedFrame parent) {
         this.parent = parent;
         this.addMouseListener(this);
-
+        
         ImageIcon orignalIcon = new ImageIcon("person.png");
         ImageIcon callorignalIcon = new ImageIcon("telephone.png");
         ImageIcon messageorignalIcon = new ImageIcon("message.png");
@@ -89,14 +102,19 @@ public class PersonPanel extends JPanel implements MouseListener {
         this.name.setBounds(120, 15, 300, 40);
         this.number.setBounds(120, 50, 300, 40);
         this.name.setFont(new Font("Arial", Font.PLAIN, 25));
-
+        
         this.btncall.setBounds(120, 100, 60, 60);
         this.btnmsg.setBounds(200, 100, 60, 60);
         this.btncall.setHorizontalAlignment(JLabel.CENTER);
         this.btnmsg.setHorizontalAlignment(JLabel.CENTER);
         this.btncall.addMouseListener(this);
         this.btnmsg.addMouseListener(this);
-
+        
+        
+        this.timeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        this.timeLabel.setBounds(300, 50, 200, 40);
+        this.dateLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        this.dateLabel.setBounds(300, 10, 200, 40);
         // add compounds
         this.add(this.btnmsg);
         this.add(this.btncall);
@@ -111,22 +129,97 @@ public class PersonPanel extends JPanel implements MouseListener {
         this.setBorder(border);
     }
 
-    // Creating storing object function using Map
-    public ContactData getContactInfo() {
-        ContactData data = new ContactData();
-        data.name = name.getText();
-        data.number = number.getText();
-        data.favorite = isFavorite;
-        return data;
+ 
+  
+    
+   public byte[] imageToByteArray(Image img) throws IOException {
+        if (img == null) return null;
+
+        // Wait until image is fully loaded
+        ImageIcon checkIcon = new ImageIcon(img);
+        int width = checkIcon.getIconWidth();
+        int height = checkIcon.getIconHeight();
+
+        if (width <= 0 || height <= 0) {
+            throw new IOException("Image not fully loaded or invalid dimensions.");
+        }
+
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        boolean success = ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+        if (!success) {
+            throw new IOException("ImageIO.write failed: PNG writer not available");
+        }
+
+        return byteArrayOutputStream.toByteArray();
     }
 
+    public void setImageFromBytes(byte[] imageData) {
+        if (imageData != null) {
+            try {
+                ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
+                BufferedImage bufferedImage = ImageIO.read(bis);
+                if (bufferedImage != null) {
+                    Image scaledImage = getHighQualityScaledImage(bufferedImage, 90, 90);;
+                    this.image.setIcon(new ImageIcon(scaledImage));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Set default image if no image data is available
+            ImageIcon defaultImage = new ImageIcon("person.png");
+            this.image.setIcon(new ImageIcon(getHighQualityScaledImage(defaultImage.getImage(), 90, 90)));
+        }
+    }
 
+    private Image getHighQualityScaledImage(Image srcImg, int w, int h) {
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+        
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
+    }
+    
+    public PersonPanel timeOfCall(PersonPanel panel) {
+    	LocalDate date = LocalDate.now();
+    	LocalTime time = LocalTime.now();
+    	PersonPanel recent=new PersonPanel(this.parent);
+    	recent.name.setText(this.name.getText());
+    	recent.number.setText(this.number.getText());
+    	recent.image.setIcon(this.image.getIcon());;
+    	recent.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
+    	recent.remove(recent.btnfav);
+    	recent.remove(recent.btnOptions);
+    	 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    	recent.timeLabel.setText(time.format(formatter));
+    	recent.dateLabel.setText(date.toString());
+    	recent.add(recent.timeLabel);
+    	recent.add(recent.dateLabel);
+		return recent;
+    	
+    }
  
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == this.image) {
-            JFileChooser fc = new JFileChooser();
+            JFileChooser fc = new JFileChooser("C:\\Users\\midor\\OneDrive\\Pictures\\fake people");
             fc.setAcceptAllFileFilterUsed(false);
             fc.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
             int option = fc.showOpenDialog(null);
@@ -134,7 +227,7 @@ public class PersonPanel extends JPanel implements MouseListener {
                 File fl = fc.getSelectedFile();
                 String sfile = fl.getAbsolutePath();
                 ImageIcon orignalIcon = new ImageIcon(sfile);
-                Image pic = orignalIcon.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
+                Image pic = getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
                 this.image.setIcon(new ImageIcon(pic));
             }
         } else if (e.getSource() == this.btnfav) {
@@ -146,6 +239,11 @@ public class PersonPanel extends JPanel implements MouseListener {
                 this.isFavorite = false;
             }
         } else if (e.getSource() == this.btncall) {
+        	
+        	
+        	PersonPanel recent= timeOfCall(this);
+        	this.parent.recentList.add(recent);
+        	
             parent.showCallingPanel(this);
         } else if (e.getSource() == this.btnOptions) {
             options.show(btnOptions, e.getX(), e.getY());
