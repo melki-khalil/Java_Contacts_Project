@@ -41,6 +41,7 @@ public class PersonPanel extends JPanel implements MouseListener {
     JLabel btnOptions = new JLabel();
     JMenuItem delete = new JMenuItem("delete");
     JMenuItem edit = new JMenuItem("edit");
+    JMenuItem call = new JMenuItem("call");
     BasedFrame parent;
     
 
@@ -60,8 +61,7 @@ public class PersonPanel extends JPanel implements MouseListener {
         Image bp = orignalIcon.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
 
         // options bar
-        this.delete.addMouseListener(this);
-        this.edit.addMouseListener(this);
+     
 
         // Create popup menu
         this.options = new JPopupMenu(); 
@@ -70,6 +70,12 @@ public class PersonPanel extends JPanel implements MouseListener {
         });
         this.edit.addActionListener(e -> {
             parent.editContact(this);
+        });
+        this.call.addActionListener(e -> {
+        	PersonPanel recent= timeOfCall(this);
+        	this.parent.recentList.add(recent);
+        	
+            parent.showCallingPanel(this);
         });
         this.options.add(this.edit);
         this.options.add(this.delete);
@@ -230,7 +236,8 @@ public class PersonPanel extends JPanel implements MouseListener {
                 Image pic = getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
                 this.image.setIcon(new ImageIcon(pic));
             }
-        } else if (e.getSource() == this.btnfav) {
+        }
+        else if (e.getSource() == this.btnfav) {
             if (!this.isFavorite) {
                 this.btnfav.setBackground(Color.yellow);
                 this.isFavorite = true;
@@ -238,16 +245,20 @@ public class PersonPanel extends JPanel implements MouseListener {
                 this.btnfav.setBackground(Color.white);
                 this.isFavorite = false;
             }
-        } else if (e.getSource() == this.btncall) {
-        	
+            this.parent.contentPanel.removeAll();
+            this.parent.rearrangePanels(this.parent.panelList);
+        } 
+        else if (e.getSource() == this.btncall) {
         	
         	PersonPanel recent= timeOfCall(this);
         	this.parent.recentList.add(recent);
         	
             parent.showCallingPanel(this);
-        } else if (e.getSource() == this.btnOptions) {
+        }
+        else if (e.getSource() == this.btnOptions) {
             options.show(btnOptions, e.getX(), e.getY());
-        } else {
+        } 
+        else {
             if (this.k == 0) {
                 this.k = 70; // expand
             } else {

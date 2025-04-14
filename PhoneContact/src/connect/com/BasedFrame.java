@@ -13,6 +13,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -42,16 +45,18 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     JScrollPane scroll = new JScrollPane(contentPanel);	
     JLabel btnFav= new JLabel("favorite");
     JLabel btnctn= new JLabel("Contact");
+    JLabel btnrec= new JLabel("recent");
     JLabel btntel= new JLabel();
     JLayeredPane pane= new JLayeredPane();
     JPanel searchPanel=new JPanel();
     JTextField searchText= new JTextField();
     String input="";
     ArrayList<Object[]> panelData = new ArrayList<>();
-
     
-    
+    Color SectionColor=new Color(143, 139, 129);
+      
     List<PersonPanel> panelList = new ArrayList<>();
+    List<PersonPanel> recentList = new ArrayList<>();
     public BasedFrame() {
     	
     	this.pane.setLayout(null);
@@ -62,14 +67,18 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.contentPanel.setPreferredSize(new Dimension(500, 600));
         this.btnFav.setBounds(330,0,165,65);
         this.btnctn.setBounds(165,0,165,65);
+        this.btnrec.setBounds(5,0,165,65);
+        
         this.btntel.setBounds(410,525,65,65);
         
+       
         
         this.setTitle("app");
         this.setSize(500, 700);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(new Color(200, 200, 200));
+        this.setLocation(500,10);
         //keypad
         ImageIcon telorignalIcon = new ImageIcon ("keypad.png");
         Image telimg= telorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
@@ -80,8 +89,15 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.btntel.setVerticalAlignment(JLabel.CENTER);
         this.btntel.addMouseListener(this);
         
+        //recent section
+        this.btnrec.setBackground(Color.WHITE);
+        this.btnrec.setOpaque(true);
+        this.btnrec.setFont(new Font("Arial", Font.PLAIN, 25));
+        this.btnrec.setVerticalTextPosition(JLabel.CENTER);
+        this.btnrec.setVerticalTextPosition(JLabel.BOTTOM);
+        this.btnrec.addMouseListener(this);
          //contact section
-        this.btnctn.setBackground(Color.gray);
+        this.btnctn.setBackground(this.SectionColor);
         this.btnctn.setOpaque(true);
         this.btnctn.setFont(new Font("Arial", Font.PLAIN, 25));
         this.btnctn.setVerticalTextPosition(JLabel.CENTER);
@@ -89,7 +105,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.btnctn.addMouseListener(this);
         //favorite section
       
-        
+        this.btnFav.setBackground(Color.WHITE);
         this.btnFav.setOpaque(true);
         this.btnFav.setFont(new Font("Arial", Font.PLAIN, 25));
         this.btnFav.setVerticalTextPosition(JLabel.CENTER);
@@ -121,12 +137,13 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.add(pane);
         this.buttonstPanel.add(this.btnctn);
         this.buttonstPanel.add(this.btnFav);
+        this.buttonstPanel.add(this.btnrec);
         this.add(this.buttonstPanel);
         
         extractContacts();
         	
         
-        showContact();
+        showContacts();
         rearrangePanels(this.panelList); 
         
 
@@ -144,13 +161,16 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	}
     
     public void rearrangePanels( List<PersonPanel> panels ) {
+    	
         int y = 0;
         if(this.modfav) {
         	for (PersonPanel panel :panels) {
-                int height = 100 + panel.k;
+                int height = 100 ;
+                panel.options.remove(panel.call);
                 if(panel.isFavorite) {
                 	panel.setBounds(0, y, 500, height);
                 	this.contentPanel.add(panel);
+                	
                     y += height;
                 }
             }
@@ -158,6 +178,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         else {
         	
         	for (PersonPanel panel :panels) {
+        		   panel.options.remove(panel.call);
         		int height = 100 + panel.k;
         		panel.setBounds(0, y, 500, height);
         		this.contentPanel.add(panel);
@@ -176,26 +197,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         contentPanel.repaint();
     }
     
-    public void panelMode() {
-    	int i=0;
-    	if(this.modfav) {
-    		for(PersonPanel panel: this.panelList) {
-				if(panel.isFavorite) {
-					panel.setBounds(0, 100*i, 500, 100);
-					this.contentPanel.add(panel);
-					i++;
-				}
-			}
-    		
-    	}
-    	else {
-    		for(PersonPanel panel: this.panelList) {
-    			panel.setBounds(0, 100*i, 500, 100);
-    			this.contentPanel.add(panel);
-    			i++;
-    		}
-    	}
-    }
+   
     
     
     public void removeContact(PersonPanel Contact) {
@@ -206,7 +208,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 		
     	this.panelList.remove(Contact);
     	
-		panelMode();
+		
 		 rearrangePanels(this.panelList);  
 		
 		this.contentPanel.revalidate(); 
@@ -225,8 +227,8 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.setLayout(null);
         this.add(pane);
         this.add(this.buttonstPanel);
-        showContact();
-         rearrangePanels(this.panelList); 
+        
+        rearrangePanels(this.panelList); 
         this.revalidate();
         this.repaint();
    }
@@ -260,7 +262,8 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.pane.setLayout(null);
         this.pane.add(this.scroll, Integer.valueOf(0));
         
-        this.showContact();
+        showContacts();
+        
        
     	this.setLayout(null);
     	
@@ -287,16 +290,24 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.repaint();
         
         callp.btnBack.addActionListener(e -> {
+        	
             this.goBack();
         });
 
     }
-    public void showContact(){
-    	this.modfav=false;
+    public void showContacts(){
+    	
 		this.contentPanel.removeAll();
 		
-		panelMode();
-		 rearrangePanels(this.panelList);  
+		int y=0;
+		for (PersonPanel panel :this.panelList) {
+    		int height = 100 + panel.k;
+    		panel.setBounds(0, y, 500, height);
+    		panel.options.add(panel.call);
+    		this.contentPanel.add(panel);
+    		y += height;
+    	}
+		 
 		
 		this.contentPanel.revalidate(); 
 		this.contentPanel.repaint();    
@@ -364,6 +375,15 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
             data.name = panel.name.getText();
             data.number = panel.number.getText();
             data.favorite = panel.isFavorite;
+            byte[] imageData = null;
+            ImageIcon imageIcon = (ImageIcon) panel.image.getIcon();
+            if (imageIcon != null) {
+                try {
+                    data.imageData = panel.imageToByteArray(imageIcon.getImage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             contactList.add(data);
         }
 
@@ -403,7 +423,9 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
             panel.name.setText(contact.name);
             panel.number.setText(contact.number);
             panel.isFavorite = contact.favorite;
+            panel.btnfav.setBackground(contact.favorite? Color.yellow : Color.white );
             panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
+            panel.setImageFromBytes(contact.imageData);
             panelList.add(panel);
         }
     }
@@ -440,26 +462,44 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     //mouse listener functions
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		this.modfav=true;
+		
 		if(e.getSource()==this.btnFav) {
-			
-				this.contentPanel.removeAll();
+			this.modfav=true;
+			this.contentPanel.removeAll();
 				
 			
 			this.contentPanel.revalidate(); 
 			this.contentPanel.repaint();    
 			
-		
-			int i=0;
-			panelMode();
+			this.btnFav.setBackground(SectionColor);
+			this.btnrec.setBackground(Color.WHITE);
+			this.btnctn.setBackground(Color.WHITE);
+			
+			
 			 rearrangePanels(this.panelList);  
 			
 		
 	}
+		else if(e.getSource()==this.btnrec) {
+			this.modfav=false;
+			this.contentPanel.removeAll();
+			this.btnrec.setBackground(SectionColor);
+			this.btnFav.setBackground(Color.WHITE);
+			this.btnctn.setBackground(Color.WHITE);
+			
+			
+			
+			 rearrangePanels(this.recentList);  
+	
+		}
 	//contact button action	
 		else if(e.getSource()==this.btnctn) {
-			showContact();
-		
+			this.modfav=false;
+			this.btnctn.setBackground(SectionColor);
+			this.btnrec.setBackground(Color.WHITE);
+			this.btnFav.setBackground(Color.WHITE);
+			 rearrangePanels(this.panelList);
+			
 	}
 		else if(e.getSource()==this.btntel) {
 			 this.searching=false;
