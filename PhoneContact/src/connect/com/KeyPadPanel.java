@@ -21,15 +21,18 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class NombersOPanel extends JPanel implements MouseListener , KeyListener{
-    JPanel NombersArea = new JPanel(new GridLayout(5, 3, 5, 5));
+public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
+ 
+	
+	
+	JPanel NombersArea = new JPanel(new GridLayout(5, 3, 5, 5));
     JLabel textArea = new JLabel();
     JLabel btncall = new JLabel();
     JLabel removeNumber = new JLabel();
     JPopupMenu options ;
     JLabel btnOptions = new JLabel();
     JButton btnBack = new JButton();
-    JMenuItem edit= new JMenuItem("new contact");
+    JMenuItem addcon= new JMenuItem("new contact");
     
 
     // Digit labels stored in an array for easy iteration
@@ -39,21 +42,22 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
     String number="";
     BasedFrame parent;
     
-    
-    public NombersOPanel(BasedFrame parent) {
+    FunctionsClass fun;
+    public KeyPadPanel(BasedFrame parent) {
+    	fun= new FunctionsClass(parent);
     	this.parent=parent;
-        setLayout(null);
-        setBounds(0, 200, 500, 500);
+        this.setLayout(null);
+        this.setBounds(0, 200, 500, 500);
         setBackground(new Color(240, 240, 240));
         
         // Text area styling
-        textArea.setBounds(20, 20, 450, 60);
+        this.textArea.setBounds(20, 20, 450, 60);
         textArea.setOpaque(true);
-        textArea.setBackground(Color.WHITE);
-        textArea.setFont(new Font("Arial", Font.BOLD, 24));
-        textArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        textArea.setHorizontalAlignment(SwingConstants.CENTER);
-        textArea.setLayout(null);
+        this.textArea.setBackground(Color.WHITE);
+        this.textArea.setFont(new Font("Arial", Font.BOLD, 24));
+        this.textArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        this.textArea.setHorizontalAlignment(SwingConstants.CENTER);
+        this.textArea.setLayout(null);
         // Keypad area styling
         NombersArea.setBounds(50, 100, 400, 300);
         NombersArea.setBackground(new Color(230, 230, 230));
@@ -70,11 +74,9 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
         }
 
         // Call button
-        options=new JPopupMenu();
+       
         btncall.setBounds(220, 300, 50, 50);
-        ImageIcon BackorignalIcon = new ImageIcon ("Back.png");
-        Image Backimg= BackorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        this.btnBack.setIcon(new ImageIcon(Backimg));
+       
         ImageIcon callIcon = new ImageIcon("telephone.png");
         Image scaledCall = callIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         btncall.setIcon(new ImageIcon(scaledCall));
@@ -83,19 +85,34 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
         btncall.setHorizontalAlignment(SwingConstants.CENTER);
         btncall.setVerticalAlignment(SwingConstants.CENTER);
         btncall.setBorder(new EmptyBorder(5, 5, 5, 5));
-      
+        // go back button
+        ImageIcon BackorignalIcon = new ImageIcon ("Back.png");
+        Image Backimg= BackorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        this.btnBack.setIcon(new ImageIcon(Backimg));
         
-        this.edit.addActionListener(e -> {
+        this.btnBack.setBounds(10,400,50,50);
+        this.btnBack.setBackground(Color.WHITE);
+        this.btnBack.setOpaque(true);
+        this.btnBack.setFont(new Font("Arial", Font.BOLD, 24));
+        this.btnBack.addMouseListener(this);
+        
+        //menu
+        options=new JPopupMenu();
+        ImageIcon dotsIcon = new ImageIcon("dots.png");
+        Image scaledDots = dotsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        this.btnOptions.setIcon(new ImageIcon(scaledDots));
+        this.btnOptions.setBounds(20, 10, 50, 40);
+        this.btnOptions.setOpaque(true);
+        this.btnOptions.setBackground(Color.white);
+        // adding contact function
+        this.addcon.addActionListener(e -> {
+        	 fun.editContact(fun.isAContact(this.textArea.getText()));
 		    
-			this.parent.addContact(this.textArea.getText());
+			
 		});
-		this.options.add(this.edit);
         
-       btnBack.setBounds(10,400,50,50);
-       btnBack.setBackground(Color.WHITE);
-       btnBack.setOpaque(true);
-       btnBack.setFont(new Font("Arial", Font.BOLD, 24));
-       btnBack.addMouseListener(this);
+		this.options.add(this.addcon);
+		// remove number button 
        
         ImageIcon deleteIcon = new ImageIcon("delete.png");
         Image scaledDelete = deleteIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
@@ -106,12 +123,7 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
        	this.removeNumber.setBackground(Color.white);
         this.removeNumber.setBounds(390,10,50,30);
         
-        ImageIcon dotsIcon = new ImageIcon("dots.png");
-        Image scaledDots = dotsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        btnOptions.setIcon(new ImageIcon(scaledDots));
-		btnOptions.setBounds(20, 10, 50, 40);
-		btnOptions.setOpaque(true);
-		btnOptions.setBackground(Color.white);
+        
 		btnOptions.addMouseListener(this);
 		btncall.addMouseListener(this);
 		this.setFocusable(true);
@@ -132,7 +144,7 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
       
     }
 
-    
+    // a function that change the textArea value 
     private void updateText(String newText) {
         this.textArea.setText(newText);
         this.number=newText;
@@ -147,27 +159,30 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
         	  
         }
         parent.input=newText;
-        parent.findByInput(newText);
+        fun.findByInput(newText);
         this.textArea.revalidate();
         this.textArea.repaint();
       
     }
+    //mouse listener event
     @Override
     public void mouseClicked(MouseEvent e) {
         for (JLabel btn : buttons) {
             if (e.getSource() == btn) {
-            	updateText(textArea.getText() + btn.getText());
+            	updateText(textArea.getText() + btn.getText()); //add the button text value to the text araa 
                 return;
             }
         }
         if (e.getSource() == this.removeNumber) {
         	String str = textArea.getText();
-        	updateText(str.substring(0,str.length()-1));
+        	updateText(str.substring(0,str.length()-1)); //remove one character from the text
             return;
         }
+        
         else if (e.getSource() == btncall) {
         	String str=this.textArea.getText();
         	
+        	// checking the number type
         	
         	if ( str.startsWith("*")&& str.endsWith("#")) {
         	    JOptionPane.showMessageDialog(null, " Code "+str+" is in process","code", JOptionPane.INFORMATION_MESSAGE);
@@ -178,13 +193,15 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
         	}
         	else if(!str.equals("")){
         		
-        		
-        		this.parent.isAContact(str);
+        		//calling the check method function
+        		PersonPanel contact= this.fun.isAContact(str);
+        		fun.showCallingPanel(contact);
         	}
         	
         	
         
         }
+        // show options menu
         else if(e.getSource()==this.btnOptions) {
 			options.show(btnOptions, e.getX(), e.getY());
 		}
@@ -197,6 +214,8 @@ public class NombersOPanel extends JPanel implements MouseListener , KeyListener
     @Override public void mouseExited(MouseEvent e) {}
 
 
+    
+   // key listener for typing using the keyboard
 	@Override
 	public void keyTyped(KeyEvent e) {
 		if(this==e.getSource()) {
