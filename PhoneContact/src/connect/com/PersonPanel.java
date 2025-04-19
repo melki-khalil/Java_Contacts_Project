@@ -26,6 +26,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 
 public class PersonPanel extends JPanel implements MouseListener {
+	FunctionsClass fun= new FunctionsClass(this);
+	
     int k = 0;
     JLabel image = new JLabel();
     JLabel name = new JLabel("");
@@ -43,7 +45,8 @@ public class PersonPanel extends JPanel implements MouseListener {
     JMenuItem edit = new JMenuItem("edit");
     JMenuItem call = new JMenuItem("call");
     BasedFrame parent;
-    
+    boolean lightMood =true;
+    Color themeColor=  Color.white ;
 
     PersonPanel(BasedFrame parent) {
         this.parent = parent;
@@ -63,32 +66,35 @@ public class PersonPanel extends JPanel implements MouseListener {
         // options bar
      
 
-        // Create popup menu
+        // Create pop up menu
         this.options = new JPopupMenu(); 
         this.delete.addActionListener(e -> {
-            parent.removeContact(this);
+            parent.fun.removeContact(this);
         });
         this.edit.addActionListener(e -> {
-            parent.editContact(this);
+            parent.fun.editContact(this);
         });
         this.call.addActionListener(e -> {
-        	PersonPanel recent= timeOfCall(this);
+        	PersonPanel recent= fun.timeOfCall(this);
         	this.parent.recentList.add(recent);
         	
-            parent.showCallingPanel(this);
+            parent.fun.showCallingPanel(this);
         });
         this.options.add(this.edit);
         this.options.add(this.delete);
 
-        // Dots icon that shows the popup menu
+        // Dots icon that shows the pop up menu
         ImageIcon dotsIcon = new ImageIcon("dots.png");
         Image scaledDots = dotsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         btnOptions.setIcon(new ImageIcon(scaledDots));
         btnOptions.setBounds(440, 25, 50, 40);
         btnOptions.setOpaque(true);
-        btnOptions.setBackground(Color.white);
+        btnOptions.setBackground(themeColor);
         btnOptions.addMouseListener(this);
-
+        
+       //
+        this.setBackground(this.themeColor);
+        this.setOpaque(true);
         this.image.setIcon(new ImageIcon(bp));
         this.btncall.setIcon(new ImageIcon(call));
         this.btnmsg.setIcon(new ImageIcon(message));
@@ -131,95 +137,12 @@ public class PersonPanel extends JPanel implements MouseListener {
         this.add(btnOptions);
 
         Border border = BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(0x706A69));
-        this.setBackground(Color.white);
+  
         this.setBorder(border);
     }
 
  
   
-    
-   public byte[] imageToByteArray(Image img) throws IOException {
-        if (img == null) return null;
-
-        // Wait until image is fully loaded
-        ImageIcon checkIcon = new ImageIcon(img);
-        int width = checkIcon.getIconWidth();
-        int height = checkIcon.getIconHeight();
-
-        if (width <= 0 || height <= 0) {
-            throw new IOException("Image not fully loaded or invalid dimensions.");
-        }
-
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = bufferedImage.createGraphics();
-        g2d.drawImage(img, 0, 0, null);
-        g2d.dispose();
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        boolean success = ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
-        if (!success) {
-            throw new IOException("ImageIO.write failed: PNG writer not available");
-        }
-
-        return byteArrayOutputStream.toByteArray();
-    }
-
-    public void setImageFromBytes(byte[] imageData) {
-        if (imageData != null) {
-            try {
-                ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
-                BufferedImage bufferedImage = ImageIO.read(bis);
-                if (bufferedImage != null) {
-                    Image scaledImage = getHighQualityScaledImage(bufferedImage, 90, 90);;
-                    this.image.setIcon(new ImageIcon(scaledImage));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            // Set default image if no image data is available
-            ImageIcon defaultImage = new ImageIcon("person.png");
-            this.image.setIcon(new ImageIcon(getHighQualityScaledImage(defaultImage.getImage(), 90, 90)));
-        }
-    }
-
-    private Image getHighQualityScaledImage(Image srcImg, int w, int h) {
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = resizedImg.createGraphics();
-        
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
-        g2.drawImage(srcImg, 0, 0, w, h, null);
-        g2.dispose();
-
-        return resizedImg;
-    }
-    
-    public PersonPanel timeOfCall(PersonPanel panel) {
-    	LocalDate date = LocalDate.now();
-    	LocalTime time = LocalTime.now();
-    	PersonPanel recent=new PersonPanel(this.parent);
-    	recent.name.setText(this.name.getText());
-    	recent.number.setText(this.number.getText());
-    	recent.image.setIcon(this.image.getIcon());;
-    	recent.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
-    	recent.remove(recent.btnfav);
-    	recent.remove(recent.btnOptions);
-    	 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-    	recent.timeLabel.setText(time.format(formatter));
-    	recent.dateLabel.setText(date.toString());
-    	recent.add(recent.timeLabel);
-    	recent.add(recent.dateLabel);
-		return recent;
-    	
-    }
  
 
     @Override
@@ -233,7 +156,7 @@ public class PersonPanel extends JPanel implements MouseListener {
                 File fl = fc.getSelectedFile();
                 String sfile = fl.getAbsolutePath();
                 ImageIcon orignalIcon = new ImageIcon(sfile);
-                Image pic = getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
+                Image pic = fun.getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
                 this.image.setIcon(new ImageIcon(pic));
             }
         }
@@ -242,18 +165,18 @@ public class PersonPanel extends JPanel implements MouseListener {
                 this.btnfav.setBackground(Color.yellow);
                 this.isFavorite = true;
             } else {
-                this.btnfav.setBackground(Color.white);
+                this.btnfav.setBackground(themeColor);
                 this.isFavorite = false;
             }
             this.parent.contentPanel.removeAll();
-            this.parent.rearrangePanels(this.parent.panelList);
+            this.parent.fun.rearrangePanels(this.parent.panelList);
         } 
         else if (e.getSource() == this.btncall) {
         	
-        	PersonPanel recent= timeOfCall(this);
+        	PersonPanel recent= fun.timeOfCall(this);
         	this.parent.recentList.add(recent);
         	
-            parent.showCallingPanel(this);
+            parent.fun.showCallingPanel(this);
         }
         else if (e.getSource() == this.btnOptions) {
             options.show(btnOptions, e.getX(), e.getY());
@@ -265,7 +188,7 @@ public class PersonPanel extends JPanel implements MouseListener {
                 this.k = 0;  // collapse
             }
             if (parent.searching) {
-                parent.findByInput(parent.input); 
+                parent.fun.findByInput(parent.input); 
             }
         }
     }

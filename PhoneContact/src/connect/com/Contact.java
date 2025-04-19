@@ -9,11 +9,11 @@ public class Contact {
 		BasedFrame frame = new BasedFrame();
 		
 		 	
-	        frame.setVisible(true);
+	  
 	        
 	        frame.addWindowListener(new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
-	                frame.SaveAndClose();  // Safe to do here!
+	                frame.fun.SaveAndClose();  // Safe to do here!
 	            }
 	        });
 
