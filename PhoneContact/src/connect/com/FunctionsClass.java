@@ -38,37 +38,22 @@ public class FunctionsClass {
 	}
 	
 	 //functions 
-	// search function : remove special characters from the search text box
-    public static String removeLastIfSpecial(String input) {
-	    if (input == null || input.isEmpty()) return input;
-
-	    char lastChar = input.charAt(input.length() - 1);
-	    if (!Character.isLetterOrDigit(lastChar)&& lastChar!=' ') {
-	        return input.substring(0, input.length() - 1);
-	    }
-	    return input;
-	}
+	
     // the search function
     public void findByInput(String search) {
         List<PersonPanel> result = new ArrayList<>();
         boolean match=false;
         parent.contentPanel.removeAll();
-
+        
         if (search.isEmpty()) {
             result = parent.panelList;
         } else {
         	// Looping throw the contact list to find our match
             for (PersonPanel panel : parent.panelList) {
             	// find contact by name
-            	if(parent.searching) {
-            		
-            	 match = panel.name.getText().toLowerCase().startsWith(search.trim().toLowerCase());
-            	}
-            	// find contact by number
-            	else {
-             		
-                    match =  panel.number.getText().startsWith(search);
-            	}
+            	
+            	 match = panel.name.getText().toLowerCase().startsWith(search.trim().toLowerCase())|| panel.number.getText().startsWith(search);
+            	
 
                 if (match) {
 
@@ -77,7 +62,7 @@ public class FunctionsClass {
                 }
             }
         }
-        
+  
         rearrangePanels(result);
      
     }
@@ -156,7 +141,7 @@ public class FunctionsClass {
     	parent.panelList.remove(Contact); //remove the contact from the panel list
     	
     	//refresh the contact panel
-		 rearrangePanels(parent.panelList);  
+		 rearrangePanels(this.parent.panelList);  
 		
 		
     	
@@ -169,32 +154,24 @@ public class FunctionsClass {
         parent.pane.removeAll(); // Clear the layered pane just in case
         parent.scroll.setBounds(0, 60, 500, 540);
     	parent.pane.setBounds(0, 0, 500, 600);
+    	parent.searchText.setText("");
         parent.pane.add(parent.btntel, Integer.valueOf(1));
         parent.pane.add(parent.scroll, Integer.valueOf(0));
         parent.pane.add(parent.searchText, Integer.valueOf(0));
         parent.setLayout(null);
         parent.add(parent.pane);
         parent.add(parent.buttonstPanel);
+        parent.fun.findByInput("");
         
-        rearrangePanels(parent.panelList); 
         parent.revalidate();
         parent.repaint();
    }
     
- // function that add a contact to the data base
-    public void addContact(String number) {
-    	PersonPanel panel = new PersonPanel(parent);
-    	panel.number.setText(number);
-    	editContact(panel);
-    	panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
-    	parent.panelList.add(panel);
-    	
-    	
-    }
+
     // function that modify a contact information data base
-    public void editContact(PersonPanel panel) {
+    public void editContact(PersonPanel panel, boolean isnew) {
     	parent.getContentPane().removeAll();
-    	InformationPanel edit= new InformationPanel(panel,parent);
+    	InformationPanel edit= new InformationPanel(panel,parent,isnew);
 		
     	parent.setLayout(null);
         parent.add(edit);
@@ -325,18 +302,22 @@ public class FunctionsClass {
             panel.isFavorite = contact.favorite;
             panel.btnfav.setBackground(contact.favorite? Color.yellow : Color.white );
             panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
-            
-            panel.fun.setImageFromBytes(contact.imageData);
+            Image image =panel.fun.setImageFromBytes(contact.imageData);
+            panel.image.setIcon(new ImageIcon(image));
             parent.panelList.add(panel);
         }
     }
 
     public List<ContactData> loadFromJsonToContacts(String  filePath) {
         Gson gson = new Gson();
+
         try (Reader reader = new FileReader(filePath)) {
             java.lang.reflect.Type listType = new TypeToken<List<ContactData>>() {}.getType();
             List<ContactData> contactList = gson.fromJson(reader, listType);
+            
+          
             return contactList;
+         
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JsonSyntaxException e) {
@@ -378,14 +359,15 @@ public class FunctionsClass {
      }
 
      // convert image blob that we stored into the data base into an image
-     public void setImageFromBytes(byte[] imageData) {
+     public Image setImageFromBytes(byte[] imageData) {
          if (imageData != null) {
              try {
                  ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
                  BufferedImage bufferedImage = ImageIO.read(bis);
                  if (bufferedImage != null) {
-                     Image scaledImage = getHighQualityScaledImage(bufferedImage, 90, 90);;
-                     panel.image.setIcon(new ImageIcon(scaledImage));
+                     Image scaledImage = getHighQualityScaledImage(bufferedImage, 90, 90);
+                     return scaledImage;
+                    
                  }
              } catch (IOException e) {
                  e.printStackTrace();
@@ -393,8 +375,10 @@ public class FunctionsClass {
          } else {
              // Set default image if no image data is available
              ImageIcon defaultImage = new ImageIcon("person.png");
-             panel.image.setIcon(new ImageIcon(getHighQualityScaledImage(defaultImage.getImage(), 90, 90)));
+             Image image= getHighQualityScaledImage(defaultImage.getImage(), 90, 90);
+             return image;
          }
+		return null;
      }
 
      // rendering the image
