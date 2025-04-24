@@ -40,6 +40,8 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	int id_u;
 	FunctionsClass fun= new FunctionsClass(this);
 	
 	
@@ -134,7 +136,10 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 
         this.searchText.setBounds(5, 5, 475, 50);
         this.searchText.setFont(new Font("Arial", Font.BOLD, 24));
+        this.searchText.setEditable(false);
         this.searchText.addKeyListener(this);
+       
+        this.setBackground(Color.white);
         
         this.scroll.setBounds(0, 60, 500, 540); 
         this.scroll.getVerticalScrollBar().setUnitIncrement(16); 
@@ -232,12 +237,39 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		Object src=e.getSource();
+	
+		
+		
+	    if (src == this.searchText) {
+	    	char ch = e.getKeyChar();
+	    	String str=this.searchText.getText();
+	    	if (Character.isLetterOrDigit(ch)) {
+	    		this.searchText.setText(str+ch);
+	    	}
+	    
+	    }
 		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+Object src=e.getSource();
+	
+		
+		
+	    if (src == this.searchText) {
+	    	char ch = e.getKeyChar();
+	    	String str=this.searchText.getText();
+	    	
+	    	if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+	    		str=str.substring(0,str.length()-1);
+	    		this.searchText.setText(str);
+	    	}
+	        this.searchText.setText(str);
+	        this.input=str;
+	        fun.findByInput(this.input);
+	    }
 		}
 		
 	
@@ -245,16 +277,15 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 //	
 	@Override
 	public void keyReleased(KeyEvent e) {
-		Object src=e.getSource();
+Object src=e.getSource();
 	
 		
 		
 	    if (src == this.searchText) {
-	        String str = fun.removeLastIfSpecial(this.searchText.getText());
-	        this.searchText.setText(str);
-	        this.input=str;
+	    
+	        this.input=this.searchText.getText();
 	        fun.findByInput(this.input);
-	    } 
+	    }
 		
 	}
 }

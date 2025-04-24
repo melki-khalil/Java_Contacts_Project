@@ -29,9 +29,10 @@ public class PersonPanel extends JPanel implements MouseListener {
 	FunctionsClass fun= new FunctionsClass(this);
 	
     int k = 0;
+    
     JLabel image = new JLabel();
-    JLabel name = new JLabel("");
-    JLabel number = new JLabel("123654789");
+    JLabel name = new JLabel();
+    JLabel number = new JLabel("");
     JLabel btnfav = new JLabel();
     JLabel btncall = new JLabel();
     JLabel btnmsg = new JLabel();
@@ -72,7 +73,7 @@ public class PersonPanel extends JPanel implements MouseListener {
             parent.fun.removeContact(this);
         });
         this.edit.addActionListener(e -> {
-            parent.fun.editContact(this);
+            parent.fun.editContact(this,false);
         });
         this.call.addActionListener(e -> {
         	PersonPanel recent= fun.timeOfCall(this);
@@ -147,20 +148,7 @@ public class PersonPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == this.image) {
-            JFileChooser fc = new JFileChooser("C:\\Users\\midor\\OneDrive\\Pictures\\fake people");
-            fc.setAcceptAllFileFilterUsed(false);
-            fc.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
-            int option = fc.showOpenDialog(null);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                File fl = fc.getSelectedFile();
-                String sfile = fl.getAbsolutePath();
-                ImageIcon orignalIcon = new ImageIcon(sfile);
-                Image pic = fun.getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
-                this.image.setIcon(new ImageIcon(pic));
-            }
-        }
-        else if (e.getSource() == this.btnfav) {
+        if (e.getSource() == this.btnfav) {
             if (!this.isFavorite) {
                 this.btnfav.setBackground(Color.yellow);
                 this.isFavorite = true;
@@ -187,6 +175,7 @@ public class PersonPanel extends JPanel implements MouseListener {
             } else {
                 this.k = 0;  // collapse
             }
+            
             if (parent.searching) {
                 parent.fun.findByInput(parent.input); 
             }
@@ -199,9 +188,7 @@ public class PersonPanel extends JPanel implements MouseListener {
     public void mouseReleased(MouseEvent e) {}
     @Override
     public void mouseEntered(MouseEvent e) {
-        if (e.getSource() == this.image) {
-            this.image.setText("+");
-        } else if (e.getSource() == this.btncall) {
+   if (e.getSource() == this.btncall) {
             this.btncall.setBorder(this.sqrborder);
         } else if (e.getSource() == this.btnmsg) {
             this.btnmsg.setBorder(this.sqrborder);
@@ -210,11 +197,7 @@ public class PersonPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if (e.getSource() == this.image) {
-            this.image.setText("");
-        } else if (e.getSource() == this.btncall) {
-            this.btncall.setBorder(null);
-        }
+    
     }
 
 	

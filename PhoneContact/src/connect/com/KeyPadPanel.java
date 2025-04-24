@@ -44,8 +44,8 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
     
     FunctionsClass fun;
     public KeyPadPanel(BasedFrame parent) {
-    	fun= new FunctionsClass(parent);
     	this.parent=parent;
+    	fun= new FunctionsClass(parent);
         this.setLayout(null);
         this.setBounds(0, 200, 500, 500);
         setBackground(new Color(240, 240, 240));
@@ -106,7 +106,7 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
         this.btnOptions.setBackground(Color.white);
         // adding contact function
         this.addcon.addActionListener(e -> {
-        	 fun.editContact(fun.isAContact(this.textArea.getText()));
+        	 fun.editContact(fun.isAContact(this.textArea.getText()),true);
 		    
 			
 		});
@@ -227,7 +227,7 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
 				updateText(textArea.getText() + ch);
 	            return;
 			}
-			else if( e.getKeyCode()==0) {
+			  if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) && !str.isEmpty())  {
 				str= textArea.getText();
 				updateText(str.substring(0,str.length()-1));
 			}
@@ -239,8 +239,13 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(this==e.getSource()) {
+			
+			  if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE)  {
+				String str= textArea.getText();
+				updateText(str.substring(0,str.length()-1));
+			}
+		}
 	}
 
 
