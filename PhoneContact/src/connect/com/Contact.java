@@ -13,7 +13,7 @@ public class Contact {
 	        
 	        frame.addWindowListener(new WindowAdapter() {
 	            public void windowClosing(WindowEvent e) {
-	                frame.fun.SaveAndClose();  // Safe to do here!
+	                frame.fun.SaveAndClose();  
 	            }
 	        });
 

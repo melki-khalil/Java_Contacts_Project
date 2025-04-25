@@ -25,6 +25,10 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
  
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JPanel NombersArea = new JPanel(new GridLayout(5, 3, 5, 5));
     JLabel textArea = new JLabel();
     JLabel btncall = new JLabel();

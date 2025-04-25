@@ -222,7 +222,7 @@ public class FunctionsClass {
 
     }
     public void showContacts(){
-    	
+    	parent.Defaultpanel();
 		parent.contentPanel.removeAll();
 		
 		int y=0;
@@ -252,7 +252,7 @@ public class FunctionsClass {
             data.name = panel.name.getText();
             data.number = panel.number.getText();
             data.favorite = panel.isFavorite;
-            byte[] imageData = null;
+      
             ImageIcon imageIcon = (ImageIcon) panel.image.getIcon();
             if (imageIcon != null) {
                 try {

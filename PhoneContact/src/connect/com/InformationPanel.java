@@ -20,6 +20,10 @@ import javax.swing.border.Border;
 
 public class InformationPanel extends JPanel implements KeyListener,MouseListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	JLabel labelname= new JLabel("name");
 	JTextField nameText= new JTextField();
 	JLabel labelnumber= new JLabel("number");
@@ -34,7 +38,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	boolean isnew=false;
 	InformationPanel(PersonPanel panel,BasedFrame parent,boolean isnew) {
 		this.parent=parent;
-		FunctionsClass fun= new FunctionsClass(parent);
+	
 		this.contact=panel;
 		this.isnew=isnew;
 		this.image.setIcon(this.contact.image.getIcon());
@@ -132,7 +136,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	    	char ch = e.getKeyChar();
 	    	String str=this.numberText.getText();
 	    	if (Character.isDigit(ch)) {
-	    		this.numberText.setText(this.numberText.getText()+ch);
+	    		this.numberText.setText(str+ch);
 	    	}
 	    }
 	    
@@ -175,8 +179,11 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 		
 		
 		
-	//mouse listener	
 	}
+	
+	
+	
+	//mouse listener	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Object src =e.getSource();
@@ -198,11 +205,6 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 			}
 			
 		}
-		
-	}
-	@Override
-	public void mousePressed(MouseEvent e) {
-		Object src =e.getSource();
 		if (src == this.image) {
             JFileChooser fc = new JFileChooser("C:\\Users\\midor\\OneDrive\\Pictures\\fake people");
             fc.setAcceptAllFileFilterUsed(false);
@@ -216,6 +218,12 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
                 this.image.setIcon(new ImageIcon(pic));
             }
         }
+		
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		
 		
 	}
 	@Override

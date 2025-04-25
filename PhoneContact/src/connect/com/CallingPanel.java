@@ -1,11 +1,19 @@
 package connect.com;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class CallingPanel extends JPanel {
 
-    JButton btnBack = new JButton("Back");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2157170028194798706L;
+	JButton btnBack = new JButton("Back");
   
     public CallingPanel(JLabel nameLabel, JLabel numberLabel) {
         

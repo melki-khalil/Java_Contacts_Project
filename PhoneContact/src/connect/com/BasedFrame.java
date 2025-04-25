@@ -8,11 +8,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 
 
@@ -65,15 +56,21 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     List<PersonPanel> panelList = new ArrayList<>();
     List<PersonPanel> recentList = new ArrayList<>();
     public BasedFrame() {
-    	
+    	  this.setTitle("app");
+          this.setSize(500, 700);
+          this.setResizable(false);
+          this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          this.getContentPane().setBackground(new Color(200, 200, 200));
+          this.setLocation(500,10);
+     
+    	SignIn log=new SignIn(this);
+
+    	this.add(log);
+    	this.setVisible(true);
+    }
+    public void  Defaultpanel(){
     	// application frame properties
-        this.setTitle("app");
-        this.setSize(500, 700);
-        this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.getContentPane().setBackground(new Color(200, 200, 200));
-        this.setLocation(500,10);
-   
+      
         
     	
         this.contentPanel.setLayout(null);
@@ -162,6 +159,8 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         
 
     }
+    
+   
     
    
     //mouse listener functions
@@ -259,10 +258,10 @@ Object src=e.getSource();
 		
 		
 	    if (src == this.searchText) {
-	    	char ch = e.getKeyChar();
+	    	
 	    	String str=this.searchText.getText();
 	    	
-	    	if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) {
+	    	if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE)&&!str.isEmpty()) {
 	    		str=str.substring(0,str.length()-1);
 	    		this.searchText.setText(str);
 	    	}

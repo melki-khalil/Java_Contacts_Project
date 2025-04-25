@@ -1,24 +1,12 @@
 package connect.com;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -26,6 +14,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.Border;
 
 public class PersonPanel extends JPanel implements MouseListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	FunctionsClass fun= new FunctionsClass(this);
 	
     int k = 0;
