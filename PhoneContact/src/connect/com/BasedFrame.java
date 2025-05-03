@@ -30,6 +30,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	int id_u;
@@ -62,11 +63,12 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
           this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
           this.getContentPane().setBackground(new Color(200, 200, 200));
           this.setLocation(500,10);
-     
-    	SignIn log=new SignIn(this);
-
-    	this.add(log);
-    	this.setVisible(true);
+          ImageIcon Icon = new ImageIcon("Icon.png"); 
+          this.setIconImage(Icon.getImage());
+          new  SignIn(this);
+          this.setVisible(true);
+          
+    
     }
     public void  Defaultpanel(){
     	// application frame properties
@@ -128,8 +130,6 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         this.btnFav.setBorder(border);
         this.setLayout(null);
 
-        ImageIcon Icon = new ImageIcon("Icon.png"); 
-        this.setIconImage(Icon.getImage());
 
         this.searchText.setBounds(5, 5, 475, 50);
         this.searchText.setFont(new Font("Arial", Font.BOLD, 24));
@@ -144,13 +144,10 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
         
         //adding components
         this.pane.add(this.btntel, Integer.valueOf(1));
-        this.pane.add(this.scroll, Integer.valueOf(0));
+        this.pane.add(this.scroll, Integer.valueOf(2));
         this.pane.add(this.searchText, Integer.valueOf(0));
    
 
-        
-        
-        this.setVisible(true);
         
         fun.extractContacts();
         fun.ShowContent();
@@ -208,7 +205,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 		else if(e.getSource()==this.btntel) {
 			 this.searching=false;
 			fun.ShowNumberPanel();
-	        
+
 	        
 			    
 			    }

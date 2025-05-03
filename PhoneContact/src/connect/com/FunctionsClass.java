@@ -38,6 +38,14 @@ public class FunctionsClass {
 	}
 	
 	 //functions 
+	//showing the log in page
+	public void logging() {
+		this.parent.getContentPane().removeAll();
+		SignIn log=new SignIn(this.parent);
+    	this.parent.add(log);
+    	this.parent.revalidate();
+    	this.parent.repaint();
+	}
 	
     // the search function
     public void findByInput(String search) {
@@ -155,8 +163,8 @@ public class FunctionsClass {
         parent.scroll.setBounds(0, 60, 500, 540);
     	parent.pane.setBounds(0, 0, 500, 600);
     	parent.searchText.setText("");
-        parent.pane.add(parent.btntel, Integer.valueOf(1));
-        parent.pane.add(parent.scroll, Integer.valueOf(0));
+        parent.pane.add(parent.btntel, Integer.valueOf(2));
+        parent.pane.add(parent.scroll, Integer.valueOf(1));
         parent.pane.add(parent.searchText, Integer.valueOf(0));
         parent.setLayout(null);
         parent.add(parent.pane);
@@ -190,16 +198,16 @@ public class FunctionsClass {
         parent.pane.setBounds(0,0,500,200);
         parent.pane.setLayout(null);
         parent.pane.add(parent.scroll, Integer.valueOf(0));
-        
-        showContacts(); //refresh the contacts panel
+      
 
     	parent.add(parent.pane);
         parent.add(number);
         
         parent.revalidate();
         parent.repaint();
+ ;
         number.btnBack.addActionListener(e -> {
-        	
+	   
             ShowContent();
             
         });

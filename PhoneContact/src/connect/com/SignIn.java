@@ -2,10 +2,7 @@ package connect.com;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Base64;
@@ -13,12 +10,12 @@ import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-public class SignIn extends JPanel implements KeyListener ,  MouseListener {
+public class SignIn extends JPanel implements  MouseListener {
 
 	/**
 	 * 
@@ -28,19 +25,20 @@ public class SignIn extends JPanel implements KeyListener ,  MouseListener {
 	
 	JLabel userLabel= new JLabel("username or email");
 	JTextField userinput= new JTextField();
-	JLabel passpasswordLabel= new JLabel("Password");
-	JTextField passpasswordinput= new JTextField();
-	JButton btnCheack= new JButton("Log in");
+	JLabel passwordLabel= new JLabel("Password");
+	JPasswordField passwordinput= new JPasswordField();
+	JButton btnCheck= new JButton("Log in");
 	JLabel btnView= new JLabel("view");
 	JLabel signUp= new JLabel("I don't have an account");
 	String inputPW="";
 	String cp=encode("apple");
 	String password=decode(cp);
-	BasedFrame parent;
+	 BasedFrame parent;
 	
 	 SignIn(BasedFrame parent){
 		 this.parent=parent;
 		 Defaultpanel();
+		 this.parent.add(this);
 	 }
 	
 public void Defaultpanel(){
@@ -54,11 +52,11 @@ public void Defaultpanel(){
     // position
     this.userLabel.setBounds(50, y, 400, 50);
     this.userinput.setBounds(50, y+50, 400, 50);
-    this.passpasswordLabel.setBounds(50, y+100, 400, 50);
-    this.passpasswordinput.setBounds(50, y+150, 400, 50);
+    this.passwordLabel.setBounds(50, y+100, 400, 50);
+    this.passwordinput.setBounds(50, y+150, 400, 50);
     this.btnView.setBounds(350,10,50,30);
     this.signUp.setBounds(170,y+200,200,20);
-    this.btnCheack.setBounds(190,y+220,100,50);
+    this.btnCheck.setBounds(190,y+220,100,50);
     
     //font style
     Border border = BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0x7E6A69));
@@ -66,94 +64,48 @@ public void Defaultpanel(){
     this.userinput.setFont(new Font("Arial", Font.BOLD, 30));
 
     this.userinput.setBorder(border);
-    this.passpasswordLabel.setFont(new Font("Arial", Font.BOLD, 30));
-    this.passpasswordinput.setFont(new Font("Arial", Font.BOLD, 50));
+    this.passwordLabel.setFont(new Font("Arial", Font.BOLD, 30));
+    this.passwordinput.setFont(new Font("Arial", Font.BOLD, 50));
     this.btnView.setFont(new Font("Arial", Font.ROMAN_BASELINE, 18));
     this.signUp.setFont(new Font("Arial", Font.ROMAN_BASELINE, 14));
  
     this.btnView.setOpaque(true);
     this.btnView.setBackground(Color.white);
-    this.passpasswordinput.setBorder(border);
+    this.passwordinput.setBorder(border);
     
    
     
-    this.userinput.addKeyListener(this);
-    this.passpasswordinput.addKeyListener(this);
+   
     this.btnView.addMouseListener(this);
-    this.btnCheack.addMouseListener(this);
+    this.btnCheck.addMouseListener(this);
     this.signUp.addMouseListener(this);
 
 
     this.add(this.userLabel);
     this.add(this.userinput);
-    this.add(this.passpasswordLabel);
-    this.add(this.passpasswordinput);
-    this.passpasswordinput.add(btnView);
+    this.add(this.passwordLabel);
+    this.add(this.passwordinput);
+    this.passwordinput.add(btnView);
     this.add(this.signUp);
-    this.add(this.btnCheack);
+    this.add(this.btnCheck);
     
     
 }
 
 
-    public  String encode(String passpassword) {
-        return Base64.getEncoder().encodeToString(passpassword.getBytes());
+    public  String encode(String password) {
+        return Base64.getEncoder().encodeToString(password.getBytes());
     }
 
     public String decode(String encoded) {
         byte[] decodedBytes = Base64.getDecoder().decode(encoded);
         return new String(decodedBytes);
     }
-    public boolean isMail(String domain) {
-    	return domain.equalsIgnoreCase("gmail.com") || domain.equalsIgnoreCase("yahoo.com") || domain.equalsIgnoreCase("outlook.com");
-    }
+    
 
-    public void checkPassword() {
-    	if (!this.inputPW.equals(this.password)) {
-			JOptionPane.showMessageDialog(btnCheack, "Wrong passpassword ", "Warning", JOptionPane.WARNING_MESSAGE);
-		}
-    	else {
-    		this.parent.fun.showContacts();
-    	}
-    }
-@Override
-public void keyTyped(KeyEvent e) {
-
-}
-@Override
-public void keyPressed(KeyEvent e) {
-
-}
-
-@Override
-public void keyReleased(KeyEvent e) {
-	Object src = e.getSource();
-
-    if (src == this.passpasswordinput) {
-       
-    	char ch = e.getKeyChar();
-        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && !this.inputPW.isEmpty()) {
-            inputPW = this.inputPW.substring(0, this.inputPW.length() - 1);
-        } else if (ch != KeyEvent.VK_DELETE && ch != KeyEvent.CHAR_UNDEFINED && ch!= KeyEvent.VK_BACK_SPACE) {
-           
-            if (Character.isLetterOrDigit(ch)|| !Character.isISOControl(ch)) {
-                inputPW += e.getKeyChar();
-            }
-        }
-
-        
-        StringBuilder masked = new StringBuilder();
-        for (int i = 0; i < this.inputPW.length(); i++) {
-            masked.append("*");
-        }
-        this.passpasswordinput.setText(masked.toString());
-
-      
-    }
     
    
-	
-}
+
 
 
 
@@ -161,30 +113,28 @@ public void keyReleased(KeyEvent e) {
 public void mouseClicked(MouseEvent e) {
 	Object src =e.getSource();
 
-	if(src==this.btnCheack) {
+	if(src==this.btnCheck) {
+		this.inputPW=RegisteringFunctions.get_password(passwordinput);
 		String userd=this.userinput.getText();
-		if(userd.contains(" ")|| userd.length()<3) {
-			JOptionPane.showMessageDialog(btnCheack, "invalide username  ", "Warning", JOptionPane.WARNING_MESSAGE);
-		} else if(this.userinput.getText().contains("@")) {
-			String[] parts=userd.split("@");
-			if(parts.length==2) {
-				String domain=parts[1];
-				if(this.isMail(domain)) {
-					JOptionPane.showMessageDialog(btnCheack, "valid Email ", "info", JOptionPane.INFORMATION_MESSAGE);
-					this.checkPassword();
+		 if(userd.contains("@")) {
+			if(	RegisteringFunctions.isMail(userd)) {
+				
+				if (RegisteringFunctions.checkPassword(this.password,this.inputPW))  {
+					this.parent.getContentPane().removeAll();
+					new loadingPage(this.parent);
+				
 				}
-				else {
-					 JOptionPane.showMessageDialog(btnCheack, "Unknown or unsupported email domain", "Warning", JOptionPane.WARNING_MESSAGE);
+
 				}
-			}
-			else {
-				 JOptionPane.showMessageDialog(btnCheack, "Invalide Email formate", "Warning", JOptionPane.WARNING_MESSAGE);
-			}
+				
 			
+		} else if(RegisteringFunctions.isValidUsername(userd)) {
+			if (RegisteringFunctions.checkPassword(this.password,this.inputPW)) {
+				this.parent.getContentPane().removeAll();
+			    new loadingPage(this.parent);
 			
-		} else {
-			JOptionPane.showMessageDialog(btnCheack, "valid username ", "info", JOptionPane.INFORMATION_MESSAGE);
-			this.checkPassword();
+			}
+
 		}
 		
 	}
@@ -194,7 +144,7 @@ public void mouseClicked(MouseEvent e) {
     if(src==this.signUp) {
     	SignUp link= new SignUp(this.parent);
     	link.Defaultpanel();
-    	System.out.println("test");
+
     }
 	
 	
@@ -204,7 +154,9 @@ public void mouseClicked(MouseEvent e) {
 public void mousePressed(MouseEvent e) {
 	Object src =e.getSource();
 	if(src==this.btnView) {
-		this.passpasswordinput.setText(this.inputPW);
+		
+		passwordinput.setEchoChar((char) 0);
+		
 	}
 }
 
@@ -212,11 +164,8 @@ public void mousePressed(MouseEvent e) {
 public void mouseReleased(MouseEvent e) {
 	Object src =e.getSource();
 	if(src==this.btnView) {
-		StringBuilder masked= new StringBuilder();
-		for (int i = 0; i < this.inputPW.length(); i++) {
-            masked.append("*");
-        }
-        this.passpasswordinput.setText(masked.toString());
+		
+		  passwordinput.setEchoChar('•');
 
 	}
 }
@@ -232,6 +181,7 @@ public void mouseEntered(MouseEvent e) {
     	
     	this.signUp.setForeground(Color.cyan);
     }
+	
 }
 
 @Override

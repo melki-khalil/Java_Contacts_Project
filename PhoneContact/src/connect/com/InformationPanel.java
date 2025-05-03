@@ -34,7 +34,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	JLabel image = new JLabel();
 	PersonPanel contact;
 	BasedFrame parent;
-	
+	static String path="";
 	boolean isnew=false;
 	InformationPanel(PersonPanel panel,BasedFrame parent,boolean isnew) {
 		this.parent=parent;
@@ -206,13 +206,14 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 			
 		}
 		if (src == this.image) {
-            JFileChooser fc = new JFileChooser("C:\\Users\\midor\\OneDrive\\Pictures\\fake people");
+            JFileChooser fc = new JFileChooser(InformationPanel.path);
             fc.setAcceptAllFileFilterUsed(false);
             fc.addChoosableFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", "jpg", "jpeg", "png"));
             int option = fc.showOpenDialog(null);
             if (option == JFileChooser.APPROVE_OPTION) {
                 File fl = fc.getSelectedFile();
                 String sfile = fl.getAbsolutePath();
+                InformationPanel.path=sfile;
                 ImageIcon orignalIcon = new ImageIcon(sfile);
                 Image pic = contact.fun.getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
                 this.image.setIcon(new ImageIcon(pic));
