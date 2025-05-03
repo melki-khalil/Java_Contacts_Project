@@ -1,0 +1,90 @@
+package connect.com;
+
+import java.awt.Dimension;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import API.API_Functions;
+import API.CountryCode;
+
+public class CountrySelector extends JTextField {
+    private static final long serialVersionUID = 1L;
+
+    private JPopupMenu suggestionsPopup;
+    JList<String> suggestionList;
+    private DefaultListModel<String> listModel;
+    private List<CountryCode> countryList;
+
+    public CountrySelector() {
+        countryList = API_Functions.loadFromJsonToCountryList("country_codes_data.json");
+
+        listModel = new DefaultListModel<>();
+        suggestionList = new JList<>(listModel);
+        suggestionsPopup = new JPopupMenu();
+
+        JScrollPane scrollPane = new JScrollPane(suggestionList);
+        scrollPane.setPreferredSize(new Dimension(200, 100));
+        suggestionsPopup.add(scrollPane);
+        
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+             int len=CountrySelector.this.getText().length();
+             if (len>6) {
+            	 CountrySelector.this.setText("");
+             }
+            }
+        });
+        
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String text = CountrySelector.this.getText().toLowerCase();
+                listModel.clear();
+
+                if (!text.isEmpty()) {
+                    for (CountryCode country : countryList) {
+                        if (country.getName().toLowerCase().startsWith(text)) {
+                            listModel.addElement(country.getName() + " (+" + country.getDial_code() + ")");
+                        }
+                    }
+                    if (!listModel.isEmpty()) {
+                        suggestionsPopup.show(CountrySelector.this, 0, CountrySelector.this.getHeight());
+                    } else {
+                        suggestionsPopup.setVisible(false);
+                    }
+                } else {
+                    suggestionsPopup.setVisible(false);
+                }
+            }
+        });
+
+     
+    }
+
+    public String getSelected(MouseEvent e) {
+   	 int index = suggestionList.locationToIndex(e.getPoint());
+        if (index >= 0) {
+            
+          
+            suggestionsPopup.setVisible(false);
+            CountrySelector.this.setText( suggestionList.getModel().getElementAt(index));
+            return "+"+ countryList.get(index).getDial_code();
+           
+        }
+        
+        JOptionPane.showMessageDialog(null, "please choose a dial code", "Error", JOptionPane.ERROR_MESSAGE);
+        return null;
+    }
+}
