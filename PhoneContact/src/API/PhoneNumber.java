@@ -1,20 +1,28 @@
 package API;
 
 public class PhoneNumber {
+	private int idC=0;
     private int idA;
     private String name;
     private String number;
-    private Boolean isFav;
+    private Boolean isFav=false;
     private String countryCode;
     private byte[] image;
 
     // Getters and Setters
-    public int getIdA() {
-        return idA;
+    public int getIdC() {
+        return idC;
     }
 
+    public void setIdC(int IdC) {
+        this.idC = IdC;
+    }
+    public int getIdA() {
+    	return idA;
+    }
+    
     public void setIdA(int idA) {
-        this.idA = idA;
+    	this.idA = idA;
     }
 
     public String getName() {
@@ -57,3 +65,5 @@ public class PhoneNumber {
         this.image = image;
     }
 }
+
+
