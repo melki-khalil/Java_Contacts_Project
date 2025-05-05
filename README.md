@@ -43,7 +43,12 @@ PhoneContact/
    ```bash
    git clone https://github.com/melki-khalil/Java_Contacts_Project.git
    cd Java_Contacts_Project/PhoneContact
+2. **Set up the database**  
+   Use the provided SQL file located in the `Java_Contacts_Project/PhoneContact` folder to recreate the database schema and tables.
+
+3. **Build and run**:
  ```bash
 mvn clean install
-mvn exec:java -Dexec.mainClass="connect.com.loadingPage"
+mvn exec:java -Dexec.mainClass="connect.com.Contact"
+
 
