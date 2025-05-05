@@ -3,12 +3,14 @@ package connect.com;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Base64;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -56,6 +58,9 @@ public class SignUp  extends JPanel implements  MouseListener {
 	String selected;
 	BasedFrame parent;
 	
+	JPanel options=new JPanel();
+	JLabel btnBack= new JLabel("");
+	
 
 	SignUp(BasedFrame parent) {	 
 	    this.parent = parent;
@@ -84,7 +89,7 @@ public void Defaultpanel(){
     contentPanel.setLayout(null);
     this.contentPanel.setPreferredSize(new Dimension(500, 750));
 
-    this.scroll.setBounds(0, 0, 500, 700);
+    this.scroll.setBounds(0, 50, 500, 650);
     
     this.nameLabel.setBounds(50, y, 200, 50);
     this.nameinput.setBounds(50, y+50, 200, 50);
@@ -103,6 +108,28 @@ public void Defaultpanel(){
     this.btnView.setBounds(350,10,50,30);
     this.btnView2.setBounds(350,10,50,30);
     this.btnCheck.setBounds(190,y+580,100,50);
+    
+    this.options.setLayout(null);
+    this.options.setBackground(Color.gray);
+    this.options.setOpaque(true);
+    this.options.setBounds(0, 0, 500, 50);
+    
+    
+    
+    
+    //back button
+    ImageIcon BackorignalIcon = new ImageIcon ("Back.png");
+    Image Backimg= BackorignalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+    this.btnBack.setIcon(new ImageIcon(Backimg));
+    this.btnBack.setBounds(0, 0, 50, 50);
+    
+    
+    this.btnBack.setBackground(Color.GRAY);
+     
+    this.btnBack.setOpaque(true);
+    this.btnBack.addMouseListener(this);
+    
+    this.options.add(this.btnBack);
     
     // borders
     Border border = BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0x7E6A69));
@@ -193,7 +220,7 @@ public void Defaultpanel(){
     
     this.contentPanel.add(this.btnCheck);
     this.add(scroll);
-    
+    this.add(this.options);
     
 }
 
@@ -212,7 +239,14 @@ public void Defaultpanel(){
 
 @Override
 public void mouseClicked(MouseEvent e) {
+	
+	
 	Object src= e.getSource();
+	// return function
+	if (src==this.btnBack) {
+		this.parent.fun.logging(); 
+	}
+	// check input function
 	if (src == this.btnCheck) {
 	    String name = this.nameinput.getText();
 	    String surname = this.surnameinput.getText();
@@ -227,23 +261,29 @@ public void mouseClicked(MouseEvent e) {
 	        && RegisteringFunctions.isMail(email)
 	        && RegisteringFunctions.checkPassword(PW, CPW)
 	        && this.selected!=null){
+	        if (this.parent.connection.add_Account(name, surname, username, email, encode(PW), this.selected)) {
+	        	
+	        	this.parent.fun.logging();  
+	        }
 	        
-	        JOptionPane.showMessageDialog(null, "Your account has been added successfully", "Information", JOptionPane.INFORMATION_MESSAGE);
 	        
-	        this.parent.fun.logging();  
 	    }
 	}
 
 }
 
+
+
+//Listener actions
 @Override
 public void mousePressed(MouseEvent e) {
 	Object src =e.getSource();
 	if(src==this.btnView) {
-	this.Conformpasswordinput.setEchoChar((char)0);
+		this.passwordinput.setEchoChar((char)0);
 	}
 	if(src==this.btnView2) {
-		this.Conformpasswordinput.setEchoChar('•');
+		this.Conformpasswordinput.setEchoChar((char)0);
+	
 	}
 	
 }
@@ -252,10 +292,11 @@ public void mousePressed(MouseEvent e) {
 public void mouseReleased(MouseEvent e) {
 	Object src =e.getSource();
 	if(src==this.btnView) {
-		this.passwordinput.setEchoChar((char)0);
+		
+		this.passwordinput.setEchoChar('•');
 	}
 	if(src==this.btnView2) {
-		this.passwordinput.setEchoChar('•');
+		this.Conformpasswordinput.setEchoChar('•');
 	}
 	
 }
@@ -263,6 +304,11 @@ public void mouseReleased(MouseEvent e) {
 @Override
 public void mouseEntered(MouseEvent e) {
 	Object src =e.getSource();
+	
+	if (src==this.btnBack) {
+		this.btnBack.setBackground(Color.LIGHT_GRAY);
+	}
+	
 	if(src==this.btnView) {
 		 this.btnView.setBackground(Color.LIGHT_GRAY);
 	}
@@ -275,6 +321,11 @@ public void mouseEntered(MouseEvent e) {
 @Override
 public void mouseExited(MouseEvent e) {
 	Object src =e.getSource();
+	
+	if (src==this.btnBack) {
+		this.btnBack.setBackground(Color.GRAY);
+	}
+	
 	if(src==this.btnView) {
 		 this.btnView.setBackground(Color.WHITE);
 	}

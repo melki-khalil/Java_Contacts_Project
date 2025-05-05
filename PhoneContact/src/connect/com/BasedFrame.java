@@ -21,6 +21,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
+import API.Account;
+import API.JDBC_connection;
+import API.PhoneNumber;
 
 
 public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
@@ -30,8 +33,11 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	/**
 	 * 
 	 */
-	
 	private static final long serialVersionUID = 1L;
+	
+	JDBC_connection connection;
+	Account account;
+	PhoneNumber contact;
 	
 	int id_u;
 	FunctionsClass fun= new FunctionsClass(this);
@@ -65,6 +71,9 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
           this.setLocation(500,10);
           ImageIcon Icon = new ImageIcon("Icon.png"); 
           this.setIconImage(Icon.getImage());
+          
+          connection= new JDBC_connection();
+          
           new  SignIn(this);
           this.setVisible(true);
           
@@ -149,7 +158,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
    
 
         
-        fun.extractContacts();
+   
         fun.ShowContent();
         
        

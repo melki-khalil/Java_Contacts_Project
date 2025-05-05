@@ -31,8 +31,8 @@ public class SignIn extends JPanel implements  MouseListener {
 	JLabel btnView= new JLabel("view");
 	JLabel signUp= new JLabel("I don't have an account");
 	String inputPW="";
-	String cp=encode("apple");
-	String password=decode(cp);
+	
+	String password="";
 	 BasedFrame parent;
 	
 	 SignIn(BasedFrame parent){
@@ -57,6 +57,7 @@ public void Defaultpanel(){
     this.btnView.setBounds(350,10,50,30);
     this.signUp.setBounds(170,y+200,200,20);
     this.btnCheck.setBounds(190,y+220,100,50);
+    
     
     //font style
     Border border = BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0x7E6A69));
@@ -118,23 +119,30 @@ public void mouseClicked(MouseEvent e) {
 		String userd=this.userinput.getText();
 		 if(userd.contains("@")) {
 			if(	RegisteringFunctions.isMail(userd)) {
-				
+				parent.account= parent.connection.getAccount(userd);
+				this.password=decode(parent.account.getPassword());
+
 				if (RegisteringFunctions.checkPassword(this.password,this.inputPW))  {
 					this.parent.getContentPane().removeAll();
 					new loadingPage(this.parent);
 				
 				}
-
-				}
+			}
 				
 			
-		} else if(RegisteringFunctions.isValidUsername(userd)) {
-			if (RegisteringFunctions.checkPassword(this.password,this.inputPW)) {
-				this.parent.getContentPane().removeAll();
-			    new loadingPage(this.parent);
+		} else if(RegisteringFunctions.isValidUsername(userd)){
+			parent.account= parent.connection.getAccount(userd);
+			
+			if(parent.account!=null) {
+				
+				this.password=decode(parent.account.getPassword());
+				
+				if (RegisteringFunctions.checkPassword(this.password,this.inputPW))  {
+					this.parent.getContentPane().removeAll();
+					new loadingPage(this.parent);
+			}
 			
 			}
-
 		}
 		
 	}

@@ -61,8 +61,13 @@ public class RegisteringFunctions {
     		JOptionPane.showMessageDialog(null, "you need to insert a password first ", "Warning", JOptionPane.WARNING_MESSAGE);
     		return false;
     	}
+    	
     	else if(CPW.isEmpty()) {
     		JOptionPane.showMessageDialog(null, "password field is empty ", "Eror", JOptionPane.ERROR_MESSAGE);
+    		return false;
+    	}
+    	else if(CPW.length()<7) {
+    		JOptionPane.showMessageDialog(null, "your password should at least contains 7 characters ", "Warning", JOptionPane.WARNING_MESSAGE);
     		return false;
     	}
     	else {

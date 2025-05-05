@@ -21,6 +21,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import API.PhoneNumber;
+
 public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
  
 	
@@ -110,7 +112,11 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
         this.btnOptions.setBackground(Color.white);
         // adding contact function
         this.addcon.addActionListener(e -> {
-        	 fun.editContact(fun.isAContact(this.textArea.getText()),true);
+        	PhoneNumber contact=new PhoneNumber();
+        	contact.setNumber(number);
+        	new  InformationPanel(contact,this.parent);
+        	
+		    ;
 		    
 			
 		});
@@ -198,8 +204,7 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
         	else if(!str.equals("")){
         		
         		//calling the check method function
-        		PersonPanel contact= this.fun.isAContact(str);
-        		fun.showCallingPanel(contact);
+        	
         	}
         	
         	

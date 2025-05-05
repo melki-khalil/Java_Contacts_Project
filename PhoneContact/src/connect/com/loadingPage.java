@@ -47,7 +47,7 @@ public class loadingPage extends JPanel{
 	    }
 	
 	public void fill(int step) {
-	    Timer timer = new Timer(100, null);
+	    Timer timer = new Timer(50, null);
 	    timer.addActionListener(e -> {
 	        int currentValue = bar.getValue();
 	        if (currentValue >= 100) {

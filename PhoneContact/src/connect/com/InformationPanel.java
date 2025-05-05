@@ -5,9 +5,11 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -17,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+
+import API.PhoneNumber;
 
 public class InformationPanel extends JPanel implements KeyListener,MouseListener {
 
@@ -29,29 +33,43 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	JLabel labelnumber= new JLabel("number");
 	JTextField numberText= new JTextField();
 	JPanel options=new JPanel();
+	
+	JLabel countryLabel= new  JLabel("Country code");
+	CountrySelector countryCB= new CountrySelector();
+	
 	JLabel btnBack= new JLabel("");
 	JLabel btnSave= new JLabel("save");
 	JLabel image = new JLabel();
-	PersonPanel contact;
-	BasedFrame parent;
+
 	static String path="";
-	boolean isnew=false;
-	InformationPanel(PersonPanel panel,BasedFrame parent,boolean isnew) {
-		this.parent=parent;
-	
-		this.contact=panel;
-		this.isnew=isnew;
-		this.image.setIcon(this.contact.image.getIcon());
-		Defaultpanel();
-		this.nameText.setText(panel.name.getText());
-		this.numberText.setText(panel.number.getText());
+	PhoneNumber contact;
+    BasedFrame parent;
+    String country;
+    byte[] byteimage;
+    InformationPanel(PhoneNumber contact, BasedFrame parent) {
+    	
+        this.parent = parent;
+        this.contact = contact;
+        this.parent.getContentPane().removeAll();
+        Defaultpanel();
+        this.parent.add(this);
+        this.parent.revalidate();
+        this.parent.repaint();
         
+        this.nameText.setText(contact.getName());
+        this.numberText.setText(contact.getNumber());
     }
 	public void Defaultpanel(){
-		
+		// set panel setting
 		this.setLayout(null);
         this.setBounds(0, 0, 500, 700);
         this.setBackground(new Color(240, 240, 240));
+        
+        //set image selector property
+        Image  orignalImage=parent.fun.setImageFromBytes(this.contact.getImage());
+        ImageIcon Icon=new ImageIcon(orignalImage);
+        
+        this.image.setIcon(Icon);
         
         this.image.addMouseListener(this);
         this.image.setHorizontalTextPosition(JLabel.CENTER);
@@ -63,6 +81,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         Border imageBorder = BorderFactory.createMatteBorder(1,1, 1, 1, new Color(0x7E6A69));
         this.image.setBorder(imageBorder);
         
+        //Components positions
         this.options.setLayout(null);
         this.options.setBackground(Color.gray);
         this.options.setOpaque(true);
@@ -73,6 +92,8 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         this.labelnumber.setBounds(50, 290, 400, 50);
         this.numberText.setBounds(50, 340, 400, 50);
         
+        this.countryLabel.setBounds(50, 400, 200, 50);
+        this.countryCB.setBounds(270, 400, 200, 50);
         //font style
         Border border = BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0x7E6A69));
         this.labelname.setFont(new Font("Arial", Font.BOLD, 30));
@@ -84,6 +105,9 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         this.numberText.setFont(new Font("Arial", Font.BOLD, 30));
         this.numberText.setEditable(false);
         this.numberText.setBorder(border);
+        
+        this.countryLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        this.countryCB.setFont(new Font("Arial", Font.BOLD, 30));
         
         this.btnSave.setFont(new Font("Arial", Font.BOLD, 30));
         
@@ -98,12 +122,26 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         
         this.btnBack.setOpaque(true);
         this.btnSave.setOpaque(true);
+        //add listeners
         
         this.nameText.addKeyListener(this);
         this.numberText.addKeyListener(this);
         this.btnBack.addMouseListener(this);
         this.btnSave.addMouseListener(this);
+       
+        this.countryCB.suggestionList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	InformationPanel.this.country=countryCB.getSelected(e);
+            	 
+            }
+        });
+
+        
       
+        //add components
+        
+        
         this.options.add(this.btnBack);
         this.options.add(this.btnSave);
         
@@ -113,6 +151,8 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         this.add(this.nameText);
         this.add(this.labelnumber);
         this.add(this.numberText);
+        this.add(this.countryLabel);
+        this.add(this.countryCB);
         
         
 	}
@@ -191,20 +231,36 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 			this.parent.fun.ShowContent();
 		}
 		if(src==this.btnSave) {
-			if(nameText.getText().isEmpty()) {
-	     	    JOptionPane.showMessageDialog(null, "You need to insert name", "Warning", JOptionPane.WARNING_MESSAGE);
-			}else {
-				this.contact.name.setText(this.nameText.getText());
-				this.contact.number.setText(this.numberText.getText());
-				this.contact.image.setIcon(this.image.getIcon());
-				if(isnew) {
-					parent.panelList.add(contact);
-				}
-				
-				this.parent.fun.ShowContent();
-			}
 			
-		}
+            if((this.nameText.getText() != null && !this.nameText.getText().isEmpty())&&
+            		(this.country != null && !this.country.isEmpty())) {
+              
+                ImageIcon imageIcon = (ImageIcon) this.image.getIcon();
+                try {
+                	this.byteimage=this.parent.fun.imageToByteArray(imageIcon.getImage());
+    				
+    			} catch (IOException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}
+                contact.setIdA(this.parent.account.getIdA());
+    			contact.setName(this.nameText.getText());
+                contact.setNumber(this.numberText.getText());
+                contact.setCountryCode(country);
+                contact.setImage(byteimage);
+                parent.connection.insertContact(contact);
+                
+                parent.fun.ShowContent();
+            }
+            else {
+            	  JOptionPane.showMessageDialog(null, "you should fill all fields", "Missing information", JOptionPane.ERROR_MESSAGE);
+            }
+       
+
+			}
+		
+			
+		
 		if (src == this.image) {
             JFileChooser fc = new JFileChooser(InformationPanel.path);
             fc.setAcceptAllFileFilterUsed(false);
@@ -215,11 +271,10 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
                 String sfile = fl.getAbsolutePath();
                 InformationPanel.path=sfile;
                 ImageIcon orignalIcon = new ImageIcon(sfile);
-                Image pic = contact.fun.getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
+                Image pic = parent.fun.getHighQualityScaledImage(orignalIcon.getImage(), 90, 90);
                 this.image.setIcon(new ImageIcon(pic));
             }
         }
-		
 		
 	}
 	@Override

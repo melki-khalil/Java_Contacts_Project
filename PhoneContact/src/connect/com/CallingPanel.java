@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import API.PhoneNumber;
+
 public class CallingPanel extends JPanel {
 
     /**
@@ -14,22 +16,21 @@ public class CallingPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 2157170028194798706L;
 	JButton btnBack = new JButton("Back");
-  
-    public CallingPanel(JLabel nameLabel, JLabel numberLabel) {
-        
-        this(nameLabel.getText(), numberLabel.getText());
-    }
+	PhoneNumber contact;
+   
 
-    public CallingPanel(String nameText, String numberText) {
+    public CallingPanel( PhoneNumber contact) {
+    	
+    this.contact= contact;
         setLayout(null);
         setBackground(new Color(230, 240, 250));
 
-        JLabel name = new JLabel(nameText);
+        JLabel name = new JLabel(this.contact.getName());
         name.setFont(new Font("Arial", Font.BOLD, 30));
         name.setBounds(0, 100, 500, 50);
         name.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel number = new JLabel(numberText);
+        JLabel number = new JLabel(this.contact.getNumber());
         number.setFont(new Font("Arial", Font.BOLD, 30));
         number.setBounds(0, 150, 500, 50);
         number.setHorizontalAlignment(JLabel.CENTER);
@@ -46,7 +47,7 @@ public class CallingPanel extends JPanel {
         btnBack.setFocusPainted(false);
         btnBack.setBorderPainted(false);
         btnBack.setOpaque(true);
-        btnBack.setBorder(new RoundedBorder(10));
+       
 
         add(name);
         add(number);

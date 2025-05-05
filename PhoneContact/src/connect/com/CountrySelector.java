@@ -74,17 +74,22 @@ public class CountrySelector extends JTextField {
     }
 
     public String getSelected(MouseEvent e) {
-   	 int index = suggestionList.locationToIndex(e.getPoint());
+        int index = suggestionList.locationToIndex(e.getPoint());
         if (index >= 0) {
-            
-          
+            String selectedValue = suggestionList.getModel().getElementAt(index);
+            CountrySelector.this.setText(selectedValue);
             suggestionsPopup.setVisible(false);
-            CountrySelector.this.setText( suggestionList.getModel().getElementAt(index));
-            return "+"+ countryList.get(index).getDial_code();
-           
+
+            // Extract the dial code from the selected value (format: "CountryName (+Code)")
+            int plusIndex = selectedValue.lastIndexOf("+");
+            if (plusIndex != -1) {
+                String dialCode = selectedValue.substring(plusIndex,selectedValue.length()-1);
+                return dialCode;
+            }
         }
-        
-        JOptionPane.showMessageDialog(null, "please choose a dial code", "Error", JOptionPane.ERROR_MESSAGE);
+
+        JOptionPane.showMessageDialog(null, "Please choose a dial code", "Error", JOptionPane.ERROR_MESSAGE);
         return null;
     }
+
 }
