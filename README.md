@@ -43,7 +43,7 @@ PhoneContact/
    ```bash
    git clone https:https://github.com/melki-khalil/Java_Contacts_Project.git
    cd Java_Contacts_Project/PhoneContact
-
+ ```bash
 mvn clean install
 mvn exec:java -Dexec.mainClass="connect.com.loadingPage"
 
