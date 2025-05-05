@@ -41,7 +41,7 @@ PhoneContact/
 
 1. **Clone the repository**:
    ```bash
-   git clone https:https://github.com/melki-khalil/Java_Contacts_Project.git
+   git clone https://github.com/melki-khalil/Java_Contacts_Project.git
    cd Java_Contacts_Project/PhoneContact
  ```bash
 mvn clean install
