@@ -45,7 +45,7 @@ public class SignUp  extends JPanel implements  MouseListener {
 	JPasswordField Conformpasswordinput = new JPasswordField();
 	
 	JLabel countryLabel= new  JLabel("Country code");
-	CountrySelector countryCB= new CountrySelector();
+	CountrySelector countryCB= new CountrySelector("");
 
 	
 	JButton btnCheck= new JButton("Log in");

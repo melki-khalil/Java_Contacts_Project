@@ -35,7 +35,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	JPanel options=new JPanel();
 	
 	JLabel countryLabel= new  JLabel("Country code");
-	CountrySelector countryCB= new CountrySelector();
+	CountrySelector countryCB;
 	
 	JLabel btnBack= new JLabel("");
 	JLabel btnSave= new JLabel("save");
@@ -51,6 +51,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         this.parent = parent;
         this.contact = contact;
         this.parent.getContentPane().removeAll();
+        countryCB= new CountrySelector(contact.getCountryCode());
         Defaultpanel();
         this.parent.add(this);
         this.parent.revalidate();

@@ -6,7 +6,7 @@ public class PhoneNumber {
     private String name;
     private String number;
     private Boolean isFav=false;
-    private String countryCode;
+    private String countryCode="";
     private byte[] image;
 
     // Getters and Setters

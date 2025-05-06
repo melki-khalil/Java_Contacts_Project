@@ -24,10 +24,26 @@ public class CountrySelector extends JTextField {
     JList<String> suggestionList;
     private DefaultListModel<String> listModel;
     private List<CountryCode> countryList;
+    private String code;
 
-    public CountrySelector() {
+    public CountrySelector(String code) {
         countryList = API_Functions.loadFromJsonToCountryList("country_codes_data.json");
-
+        String inputText="";
+        this.code=code;
+        int plusIndex = this.code.lastIndexOf("+");
+        if (plusIndex != -1) {
+            String dialCode = this.code.substring(plusIndex+1,this.code.length());
+          
+            for (CountryCode country : countryList) {
+                if (dialCode.equals(country.getDial_code())) {
+                	 inputText=  country.getName() + " (+" + country.getDial_code() + ")";
+                	 
+                }
+            }
+           
+            CountrySelector.this.setText(inputText);
+            
+        }
         listModel = new DefaultListModel<>();
         suggestionList = new JList<>(listModel);
         suggestionsPopup = new JPopupMenu();

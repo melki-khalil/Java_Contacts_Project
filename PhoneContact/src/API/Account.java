@@ -7,7 +7,7 @@ public class Account {
     private String username;
     private String email;
     private String password;
-    private String idCountry;
+    private String idCountry="";
 
     // Getters and Setters
     public int getIdA() {
