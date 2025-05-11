@@ -1,8 +1,18 @@
 package API;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JOptionPane;
 
 public class JDBC_connection {
@@ -99,27 +109,32 @@ public class JDBC_connection {
 
     // Insert or update a contact
     public PhoneNumber insertContact(PhoneNumber contact) {
-        String checkSql = "SELECT idC FROM phone_number WHERE idC = ?";
+        String checkSql = "SELECT idC FROM phone_number WHERE idA = ? AND (NAME = ? OR NUMBER = ?)";
         String updateSql = "UPDATE phone_number SET isFav = ?, country_code = ?, NAME = ?, NUMBER = ?, image = ? WHERE idC = ?";
         String insertSql = "INSERT INTO phone_number (idA, NAME, NUMBER, isFav, country_code, image) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement checkStmt = db.prepareStatement(checkSql)) {
-            checkStmt.setInt(1, contact.getIdC());
+            checkStmt.setInt(1, contact.getIdA());
+            checkStmt.setString(2, contact.getName());
+            checkStmt.setString(3, contact.getNumber());
 
             try (ResultSet rs = checkStmt.executeQuery()) {
                 if (rs.next()) {
-                    // Contact exists: update
+                    // Duplicate name or number found: update that contact
+                    int existingIdC = rs.getInt("idC");
                     try (PreparedStatement updateStmt = db.prepareStatement(updateSql)) {
                         updateStmt.setBoolean(1, contact.getIsFav());
                         updateStmt.setString(2, contact.getCountryCode());
                         updateStmt.setString(3, contact.getName());
                         updateStmt.setString(4, contact.getNumber());
                         updateStmt.setBytes(5, contact.getImage());
-                        updateStmt.setInt(6, contact.getIdC());
+                        updateStmt.setInt(6, existingIdC);
                         updateStmt.executeUpdate();
+
+                        contact.setIdC(existingIdC); // Set the updated contact's id
                     }
                 } else {
-                    // Contact doesn't exist: insert
+                    // No duplicate: insert new contact
                     try (PreparedStatement insertStmt = db.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
                         insertStmt.setInt(1, contact.getIdA());
                         insertStmt.setString(2, contact.getName());
@@ -144,6 +159,7 @@ public class JDBC_connection {
 
         return contact;
     }
+
     
     
     // updating isfav value whenever it change in the GUI
@@ -160,10 +176,10 @@ public class JDBC_connection {
         }
     }
 
-
+    //pull contacts data from the database
     public List<PhoneNumber> getContactsByIdA(int idA) {
         List<PhoneNumber> contacts = new ArrayList<>();
-        String query = "SELECT * FROM phone_number WHERE idA = ?";
+        String query = "SELECT * FROM phone_number WHERE idA = ? ORDER by NAME";
 
         try (PreparedStatement stmt = db.prepareStatement(query)) {
             stmt.setInt(1, idA);
@@ -199,7 +215,7 @@ public class JDBC_connection {
 
             int affectedRows = deleteStmt.executeUpdate();
             if (affectedRows > 0) {
-                JOptionPane.showMessageDialog(null, "Contact deleted successfully.", "Deleting status", JOptionPane.INFORMATION_MESSAGE);
+             
                 return true;
             } else {
                 JOptionPane.showMessageDialog(null, "No contact matched the provided criteria.", "Deleting status", JOptionPane.INFORMATION_MESSAGE);
@@ -210,6 +226,61 @@ public class JDBC_connection {
         }
 
         return false;
+    }
+
+    // insert in the resent call after calling 
+    public boolean insertRecentCall(int idC, LocalTime callTime, LocalDate callDate) {
+        String insertSql = "INSERT INTO recent_call (idC, call_time, call_Date) VALUES (?, ?, ?)";
+
+        try (PreparedStatement insertStmt = db.prepareStatement(insertSql)) {
+            insertStmt.setInt(1, idC);
+            insertStmt.setTime(2, Time.valueOf(callTime));
+            insertStmt.setDate(3, Date.valueOf(callDate));
+
+            int rows = insertStmt.executeUpdate();
+
+            if (rows > 0) {
+              
+            } else {
+                JOptionPane.showMessageDialog(null, "No row inserted into recent_call.", "Insert Status", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error inserting recent call into the database.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return false;
+    }
+    public List<RecentCall> getRecentsByIdC(int idA) {
+        List<RecentCall> recents = new ArrayList<>();
+
+        String query = "SELECT phone_number.idC, phone_number.NAME, phone_number.NUMBER, phone_number.image, recent_call.call_time, recent_call.call_Date "
+        		+ "FROM phone_number JOIN recent_call ON phone_number.idC = recent_call.idC "
+        		+ "WHERE phone_number.idA = ?"
+        		+ " ORDER BY recent_call.call_Date DESC, recent_call.call_time DESC;";
+
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, idA);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    RecentCall recent = new RecentCall();
+                    recent.setIdC(rs.getInt("idC"));
+                    recent.setName(rs.getString("NAME"));  // Ensure column name matches exactly
+                    recent.setNumber(rs.getString("NUMBER"));
+                    recent.setCallTime(rs.getTime("call_time"));
+                    recent.setCallDate(rs.getDate("call_Date"));
+                    recent.setImage(rs.getBytes("image"));
+
+                    recents.add(recent);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error retrieving recent calls from the database.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return recents;
     }
 
    
