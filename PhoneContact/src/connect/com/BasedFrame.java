@@ -39,7 +39,6 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	Account account;
 	PhoneNumber contact;
 	
-	int id_u;
 	FunctionsClass fun= new FunctionsClass(this);
 	
 	
@@ -172,7 +171,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     //mouse listener functions
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+		//favorite section button action
 		if(e.getSource()==this.btnFav) {
 			this.modfav=true;
 			this.contentPanel.removeAll();
@@ -190,6 +189,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 			
 		
 	}
+		//recent section button action
 		else if(e.getSource()==this.btnrec) {
 			this.modfav=false;
 			this.contentPanel.removeAll();
@@ -197,14 +197,14 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 			this.btnFav.setBackground(Color.WHITE);
 			this.btnctn.setBackground(Color.WHITE);
 			
-			
-			
+			this.fun.loadRecesntCallsToPanels(this.connection.getRecentsByIdC(this.account.getIdA()));
 			 fun.rearrangePanels(this.recentList);  
-	
+			
 		}
-	//contact button action	
+	//contact section button action
 		else if(e.getSource()==this.btnctn) {
 			this.modfav=false;
+			this.contentPanel.removeAll();
 			this.btnctn.setBackground(SectionColor);
 			this.btnrec.setBackground(Color.WHITE);
 			this.btnFav.setBackground(Color.WHITE);
