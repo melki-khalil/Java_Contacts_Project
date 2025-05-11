@@ -29,10 +29,8 @@ A Java Swing-based contact management desktop application that simulates a smart
 
 ## 📁 Project Structure
 PhoneContact/
-├── src/
-
+├── src/ \n
 │ ├── API/ # Database models and JDBC handling
-
 │ └── connect/com/ # GUI components and main application logic
 ├── gson-2.13.0.jar # Gson library
 ├── contacts_data.json # Sample contacts
