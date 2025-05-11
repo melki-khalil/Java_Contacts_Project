@@ -55,7 +55,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
     JPanel searchPanel=new JPanel();
     JTextField searchText= new JTextField();
     String input="";
-    ArrayList<Object[]> panelData = new ArrayList<>();
+    KeyPadPanel number = new KeyPadPanel(this);
     
     Color SectionColor=new Color(143, 139, 129);
       
@@ -213,7 +213,7 @@ public class BasedFrame extends JFrame implements MouseListener ,KeyListener{
 	}
 		else if(e.getSource()==this.btntel) {
 			 this.searching=false;
-			fun.ShowNumberPanel();
+			fun.ShowNumberPanel(this.number);
 
 	        
 			    

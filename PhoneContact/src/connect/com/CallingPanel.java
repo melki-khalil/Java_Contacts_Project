@@ -15,7 +15,7 @@ public class CallingPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 2157170028194798706L;
-	JButton btnBack = new JButton("Back");
+	JButton btnBack = new JButton("End the call");
 	PhoneNumber contact;
    
 
@@ -40,8 +40,8 @@ public class CallingPanel extends JPanel {
         callingLabel.setFont(new Font("Arial", Font.ITALIC, 20));
         callingLabel.setBounds(0, 200, 500, 50);
         callingLabel.setHorizontalAlignment(JLabel.CENTER);
-        btnBack.setText("Back");
-        btnBack.setBounds(180, 580, 100, 40);
+      
+        btnBack.setBounds(160, 580, 200, 40);
         btnBack.setBackground(Color.RED);
         btnBack.setForeground(Color.WHITE);
         btnBack.setFocusPainted(false);

@@ -106,7 +106,7 @@ public class PersonPanel extends JPanel implements MouseListener {
          	PersonPanel recent= fun.timeOfCall(this);
          	this.parent.recentList.add(recent);
          	
-             parent.fun.showCallingPanel(this);
+             parent.fun.showCallingPanel(this.contact);
          });
          this.options.add(this.edit);
          this.options.add(this.delete);
@@ -117,7 +117,7 @@ public class PersonPanel extends JPanel implements MouseListener {
          btnOptions.setIcon(new ImageIcon(scaledDots));
          btnOptions.setBounds(440, 25, 50, 40);
          btnOptions.setOpaque(true);
-      
+         btnOptions.setBackground(Color.white);
          btnOptions.addMouseListener(this);
          
         //
@@ -245,7 +245,7 @@ public class PersonPanel extends JPanel implements MouseListener {
            LocalTime callTime = LocalTime.now();
            LocalDate callDate= LocalDate.now();
            parent.connection.insertRecentCall(this.idC, callTime, callDate);
-            parent.fun.showCallingPanel(this);
+            parent.fun.showCallingPanel(this.contact);
 
         }
         else if (e.getSource() == this.btnOptions) {
@@ -261,6 +261,9 @@ public class PersonPanel extends JPanel implements MouseListener {
             if (parent.searching) {
                 parent.fun.findByInput(parent.input); 
                 
+            }
+            else {
+            	parent.fun.findByInput(parent.number.number); 
             }
         }
     }

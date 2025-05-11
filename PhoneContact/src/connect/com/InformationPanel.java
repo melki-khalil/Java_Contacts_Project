@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import API.PhoneNumber;
@@ -103,7 +104,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
         this.labelname.setFont(new Font("Arial", Font.BOLD, 30));
         this.nameText.setFont(new Font("Arial", Font.BOLD, 30));
      
-        this.nameText.setEditable(false);
+        
         this.nameText.setBorder(border);
         this.labelnumber.setFont(new Font("Arial", Font.BOLD, 30));
         this.numberText.setFont(new Font("Arial", Font.BOLD, 30));
@@ -167,16 +168,8 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 	public void keyTyped(KeyEvent e) {
 		  Object src = e.getSource();
 
-		    if (src == this.nameText) {
-		        String str = this.nameText.getText();
-		        char ch = e.getKeyChar();
-		        if (Character.isLetterOrDigit(ch) || ch==' ') {
-		        	 
-		            this.nameText.setText(str + ch);
-		        }
-		       
-		    }
-	    else if (src == this.numberText) {
+		    
+	    if (src == this.numberText) {
 	    	char ch = e.getKeyChar();
 	    	String str=this.numberText.getText();
 	    	if (Character.isDigit(ch)) {
@@ -194,13 +187,14 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 		Object src = e.getSource();
 
 	    if (src == this.nameText) {
-	        String str = this.nameText.getText();
-
-	        if ((e.getKeyCode() == KeyEvent.VK_BACK_SPACE || e.getKeyCode() == KeyEvent.VK_DELETE) && !str.isEmpty()) {
-	           
-	            str = str.substring(0, str.length() - 1);
-	            this.nameText.setText(str);
-	        }
+	    	SwingUtilities.invokeLater(() -> {
+	            String text = nameText.getText();
+	            // Keep only letters, digits, and spaces
+	            text = text.replaceAll("[^a-zA-Z0-9 ]", "");
+	            nameText.setText(text);
+	        });
+	     
+	        
 	    }
 	    else if (src == this.numberText) {
 	    	

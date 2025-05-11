@@ -163,9 +163,9 @@ public class FunctionsClass {
     }
 
     // Show number pad for dialing
-    public void ShowNumberPanel() {
+    public void ShowNumberPanel( KeyPadPanel number ) {
         parent.getContentPane().removeAll();
-        KeyPadPanel number = new KeyPadPanel(parent);
+        
         
         parent.pane.removeAll();
         parent.scroll.setBounds(0, 0, 500, 200);
@@ -184,9 +184,9 @@ public class FunctionsClass {
     }
 
     // Show the calling screen when making a call
-    public void showCallingPanel(PersonPanel panel) {
+    public void showCallingPanel(PhoneNumber contact) {
         parent.getContentPane().removeAll();
-        CallingPanel callp = new CallingPanel(panel.contact);
+        CallingPanel callp = new CallingPanel(contact);
         callp.setBounds(0, 0, 500, 700);
         parent.setLayout(null);
         parent.add(callp);

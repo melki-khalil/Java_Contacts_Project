@@ -112,8 +112,8 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
         this.btnOptions.setBackground(Color.white);
         // adding contact function
         this.addcon.addActionListener(e -> {
-        	PhoneNumber contact=new PhoneNumber();
-        	contact.setNumber(number);
+        	PhoneNumber contact=parent.connection.getContactsByNumber(parent.account.getIdA(), number);
+        	
         	new  InformationPanel(contact,this.parent);
         	
 		    ;
@@ -203,7 +203,8 @@ public class KeyPadPanel extends JPanel implements MouseListener , KeyListener{
         	}
         	else if(!str.equals("")){
         		
-        		//calling the check method function
+        	  	PhoneNumber contact=parent.connection.getContactsByNumber(parent.account.getIdA(), number);
+        	  	parent.fun.showCallingPanel(contact);
         	
         	}
         	

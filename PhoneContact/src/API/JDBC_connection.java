@@ -22,13 +22,27 @@ public class JDBC_connection {
 
     Connection db = null;
     Statement st = null;
-
+    
     public JDBC_connection() {
-        try {
-            db = DriverManager.getConnection(this.url, this.user, this.password);
+    	try {
+            db = DriverManager.getConnection(url, user, password);
             st = db.createStatement();
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("\u001B[32m"+"Database connection established."+"\u001B[0m");
+        } catch (SQLException e) {
+            // Print more detailed message
+            System.err.println("\033[1;38;2;225;16;7m"+ "Failed to connect to the database:");
+            System.err.println("URL: " + url);
+            System.err.println("User: " + user);
+            System.err.println("Error: " + e.getMessage()+"\033[0m");
+
+            // Suggest troubleshooting steps
+            JOptionPane.showMessageDialog(null,
+                    "Unable to connect to the database.\n" +
+                    "Check if the server is running and the credentials are correct.\n\n" +
+                    "Error: " + e.getMessage(),
+                    "Database Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(0); 
         }
     }
 
@@ -175,7 +189,7 @@ public class JDBC_connection {
             JOptionPane.showMessageDialog(null, "Error updating favorite status in the database.", "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     //pull contacts data from the database
     public List<PhoneNumber> getContactsByIdA(int idA) {
         List<PhoneNumber> contacts = new ArrayList<>();
@@ -203,6 +217,40 @@ public class JDBC_connection {
         }
 
         return contacts;
+    }
+    
+  //pull contacts data from the database
+    public PhoneNumber getContactsByNumber(int idA, String number) {
+    	 PhoneNumber contact = new PhoneNumber();
+        String query = "SELECT * FROM phone_number WHERE idA = ? ANd NUMBER=? limit 1";
+
+        try (PreparedStatement stmt = db.prepareStatement(query)) {
+            stmt.setInt(1, idA);
+            stmt.setString(2, number);
+            try (ResultSet rs = stmt.executeQuery()) {
+            	
+                if (rs.next()) {
+                   
+                    
+                    contact.setIdC(rs.getInt("IdC"));
+                    contact.setIdA(rs.getInt("idA"));
+                    contact.setName(rs.getString("NAME"));
+                    contact.setNumber(rs.getString("NUMBER"));
+                    contact.setIsFav(rs.getBoolean("isFav"));
+                    contact.setCountryCode(rs.getString("country_code"));
+                    contact.setImage(rs.getBytes("image"));
+                  
+                }
+                else {
+                	 contact.setNumber(number);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error retrieving contacts from the database.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return contact;
     }
 
     public boolean deleteContact(PhoneNumber contact) {
