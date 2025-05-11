@@ -5,12 +5,11 @@ import java.sql.Time;
 
 public class RecentCall {
     private int idC;
-    private int idA;
     private String name;
     private String number;
     private Date callDate;
     private Time callTime;
-    private String countryCode;
+   
     private byte[] image;
 
     // Getters and Setters
@@ -22,14 +21,7 @@ public class RecentCall {
         this.idC = idC;
     }
 
-    public int getIdA() {
-        return idA;
-    }
-
-    public void setIdA(int idA) {
-        this.idA = idA;
-    }
-
+   
     public String getName() {
         return name;
     }
@@ -62,14 +54,7 @@ public class RecentCall {
         this.callTime = callTime;
     }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
+   
     public byte[] getImage() {
         return image;
     }
