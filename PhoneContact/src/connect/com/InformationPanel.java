@@ -46,12 +46,15 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
     BasedFrame parent;
     String country;
     byte[] byteimage;
+    
+    
     InformationPanel(PhoneNumber contact, BasedFrame parent) {
     	
         this.parent = parent;
         this.contact = contact;
         this.parent.getContentPane().removeAll();
         countryCB= new CountrySelector(contact.getCountryCode());
+        this.country=contact.getCountryCode();
         Defaultpanel();
         this.parent.add(this);
         this.parent.revalidate();
@@ -167,7 +170,7 @@ public class InformationPanel extends JPanel implements KeyListener,MouseListene
 		    if (src == this.nameText) {
 		        String str = this.nameText.getText();
 		        char ch = e.getKeyChar();
-		        if (Character.isLetterOrDigit(ch)) {
+		        if (Character.isLetterOrDigit(ch) || ch==' ') {
 		        	 
 		            this.nameText.setText(str + ch);
 		        }

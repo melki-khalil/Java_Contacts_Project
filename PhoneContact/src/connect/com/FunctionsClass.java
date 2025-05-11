@@ -9,16 +9,17 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
-import API.PhoneNumber;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+import API.PhoneNumber;
+import API.RecentCall;
 
 public class FunctionsClass {
     private BasedFrame parent;
@@ -70,6 +71,19 @@ public class FunctionsClass {
         }
 
         rearrangePanels(parent.panelList); // Refresh the GUI layout
+    }
+    
+    public void loadRecesntCallsToPanels(List<RecentCall> recents) {
+        parent.recentList.clear();  // Clear existing panels
+
+        for (RecentCall contact : recents) {
+            PersonPanel panel = new PersonPanel(contact, parent);
+            panel.image.setBackground(new Color((int) (Math.random() * 0x1000000)));
+            parent.recentList.add(panel);
+            
+        }
+
+        rearrangePanels(parent.recentList); // Refresh the GUI layout
     }
 
 
